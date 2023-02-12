@@ -6,7 +6,7 @@ import retrofit2.Response
 
 class LocalStorage {
     suspend fun listInventory(): Response<ListInventoryResponse> {
-        delay(2000)
+        delay(1000)
         return Response.success(
             ListInventoryResponse(
                 listOf(
@@ -40,6 +40,20 @@ class LocalStorage {
                             "2021-01-01T00:00:00.000Z"
                         ), 1
                     ),
+                    InventoryItem(
+                        InventoryAttributes(
+                            1,
+                            "description",
+                            "Cajonera dentro de Armario",
+                            "LEDS SMD",
+                            1,
+                            listOf(
+                                "https://ae01.alicdn.com/kf/S3eb1a79d3ee94681813c0720fdbdce05D/100-Uds-LED-3528-SMD-Blanco-blanco-c-lido-1210-SMD-3528-LED-Ultra-brillante-blanco.jpg_Q90.jpg_.webp"
+                            ),
+                            "OK",
+                            "2021-01-01T00:00:00.000Z"
+                        ), 1
+                    )
                 ),
                 Meta(Pagination(1, 1, 20, 50))
             )
