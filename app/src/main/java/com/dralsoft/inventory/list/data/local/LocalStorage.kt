@@ -1,10 +1,12 @@
 package com.dralsoft.inventory.list.data.local
 
 import com.dralsoft.inventory.list.data.response.*
+import kotlinx.coroutines.delay
 import retrofit2.Response
 
 class LocalStorage {
     suspend fun listInventory(): Response<ListInventoryResponse> {
+        delay(2000)
         return Response.success(
             ListInventoryResponse(
                 listOf(

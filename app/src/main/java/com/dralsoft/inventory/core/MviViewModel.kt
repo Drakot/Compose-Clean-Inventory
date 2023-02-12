@@ -20,7 +20,6 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
     private val _singleEventFlow = Channel<E>()
     val singleEventFlow = _singleEventFlow.receiveAsFlow()
 
-
     init {
         viewModelScope.launch {
             actionFlow.collect {

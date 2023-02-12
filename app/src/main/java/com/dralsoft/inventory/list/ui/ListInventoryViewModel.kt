@@ -1,31 +1,46 @@
 package com.dralsoft.inventory.list.ui
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.dralsoft.inventory.core.MviViewModel
+import com.dralsoft.inventory.core.UiSingleEvent
+import com.dralsoft.inventory.core.UiState
+import com.dralsoft.inventory.list.data.response.ListInventoryResponse
 import com.dralsoft.inventory.list.domain.ListInventoryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ListInventoryViewModel @Inject constructor(private val useCase: ListInventoryUseCase) : ViewModel() {
+class ListInventoryViewModel @Inject constructor(private val useCase: ListInventoryUseCase) :
+    MviViewModel<ListInventoryResponse, UiState<ListInventoryResponse>, ListUiAction, UiSingleEvent>() {
 
-    private val _state = mutableStateOf(ListState())
-    val state: State<ListState> = _state
+    override fun initState(): UiState<ListInventoryResponse> = UiState.Loading
+    override fun handleAction(action: ListUiAction) {
+        when (action) {
+            is ListUiAction.Load -> {
+                load()
+            }
+            is ListUiAction.PostClick -> {
 
-    init {
+            }
+            is ListUiAction.UserClick -> {
 
+            }
+        }
     }
 
-    fun onRefresh() {
+    private fun load() {
+        viewModelScope.launch {
+            val response = useCase.invoke()
 
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    submitState(UiState.Success(it))
+                }
+            } else {
+                submitState(UiState.Error(response.message()))
+            }
+        }
     }
 
-    fun onAdd() {
-
-    }
-
-    fun onEdit() {
-
-    }
 }
