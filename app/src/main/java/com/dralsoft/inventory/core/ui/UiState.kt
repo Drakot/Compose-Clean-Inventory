@@ -1,4 +1,4 @@
-package com.dralsoft.inventory.core
+package com.dralsoft.inventory.core.ui
 
 sealed class UiState<out T : Any> {
     object Loading : UiState<Nothing>()

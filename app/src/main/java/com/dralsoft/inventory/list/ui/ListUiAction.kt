@@ -1,7 +1,7 @@
 package com.dralsoft.inventory.list.ui
 
 import androidx.compose.foundation.interaction.Interaction
-import com.dralsoft.inventory.core.UiAction
+import com.dralsoft.inventory.core.ui.UiAction
 
 sealed class ListUiAction : UiAction {
     object Load : ListUiAction()

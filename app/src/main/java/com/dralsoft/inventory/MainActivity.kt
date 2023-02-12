@@ -8,7 +8,11 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.dralsoft.inventory.core.navigation.NavRoutes
 import com.dralsoft.inventory.list.ui.ListInventoryScreen
 import com.dralsoft.inventory.ui.theme.InventoryTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -21,17 +25,25 @@ class MainActivity : ComponentActivity() {
             InventoryTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
-                    ListInventoryScreen()
+                    val navController = rememberNavController()
+                    App(navController = navController)
                 }
             }
         }
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun DefaultPreview() {
-    InventoryTheme {
-        ListInventoryScreen()
+fun App(navController: NavHostController) {
+    NavHost(navController, startDestination = NavRoutes.Inventories.route) {
+        composable(route = NavRoutes.Inventories.route) {
+            ListInventoryScreen(navController)
+        }
+      /*  composable(
+            route = NavRoutes.Inventory.route,
+            arguments = NavRoutes.Inventory.arguments
+        ) {
+            ListInventoryScreen(navController = NavRoutes.Inventory.fromEntry(it))
+        }*/
     }
 }

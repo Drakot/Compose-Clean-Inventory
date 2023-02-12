@@ -1,4 +1,4 @@
-package com.dralsoft.inventory.core
+package com.dralsoft.inventory.core.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

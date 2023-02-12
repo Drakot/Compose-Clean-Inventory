@@ -12,13 +12,16 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.dralsoft.inventory.core.ErrorView
 import com.dralsoft.inventory.core.Loading
-import com.dralsoft.inventory.core.UiState
+import com.dralsoft.inventory.core.ScaffoldView
+import com.dralsoft.inventory.core.ui.UiState
 import com.dralsoft.inventory.list.data.response.ListInventoryResponse
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
-fun ListInventoryScreen(viewModel: ListInventoryViewModel = hiltViewModel()) {
+fun ListInventoryScreen(navController: NavController, viewModel: ListInventoryViewModel = hiltViewModel()) {
 
     val state = viewModel.uiStateFlow.collectAsState().value
 
@@ -27,21 +30,33 @@ fun ListInventoryScreen(viewModel: ListInventoryViewModel = hiltViewModel()) {
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
+        ScaffoldView{
+            when (state) {
+                is UiState.Loading -> {
+                    Loading()
+                }
+                is UiState.Error -> {
+                    ErrorView(state.errorMessage)
+                }
+                is UiState.Success -> {
+                    OnSuccess(state)
+                }
+            }
+        }
+    }
 
-        when (state) {
-            is UiState.Loading -> {
-                Loading()
-            }
-            is UiState.Error -> {
-                ErrorView(state.errorMessage)
-            }
-            is UiState.Success -> {
-                OnSuccess(state)
+    LaunchedEffect(Unit) {
+        viewModel.singleEventFlow.collectLatest {
+            when (it) {
+                is ListUiSingleEvent.OpenDetailScreen -> {
+                    navController.navigate(it.navRoute)
+                }
             }
         }
     }
 
 }
+
 
 @Composable
 fun OnSuccess(state: UiState.Success<ListInventoryResponse>) {

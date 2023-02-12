@@ -1,9 +1,9 @@
 package com.dralsoft.inventory.list.ui
 
 import androidx.lifecycle.viewModelScope
-import com.dralsoft.inventory.core.MviViewModel
-import com.dralsoft.inventory.core.UiSingleEvent
-import com.dralsoft.inventory.core.UiState
+import com.dralsoft.inventory.core.ui.MviViewModel
+import com.dralsoft.inventory.core.ui.UiSingleEvent
+import com.dralsoft.inventory.core.ui.UiState
 import com.dralsoft.inventory.list.data.response.ListInventoryResponse
 import com.dralsoft.inventory.list.domain.ListInventoryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
