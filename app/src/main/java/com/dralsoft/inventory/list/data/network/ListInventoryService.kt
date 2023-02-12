@@ -1,6 +1,6 @@
-package com.dralsoft.inventory.list.data
+package com.dralsoft.inventory.list.data.network
 
-import com.dralsoft.inventory.list.data.network.response.ListInventoryResponse
+import com.dralsoft.inventory.list.data.response.ListInventoryResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject

@@ -1,4 +1,4 @@
-package com.dralsoft.inventory.list.data.network.response
+package com.dralsoft.inventory.list.data.response
 
 data class ListInventoryResponse(
     val `data`: List<InventoryItem>,

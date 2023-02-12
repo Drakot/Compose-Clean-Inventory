@@ -1,9 +1,8 @@
-package com.dralsoft.inventory.list.data
+package com.dralsoft.inventory.list.data.network
 
-import com.dralsoft.inventory.list.data.network.response.ListInventoryResponse
+import com.dralsoft.inventory.list.data.response.ListInventoryResponse
 import retrofit2.Response
 import retrofit2.http.GET
-import retrofit2.http.Query
 
 interface ListInventoryClient {
     @GET("/")

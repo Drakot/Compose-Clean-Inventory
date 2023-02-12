@@ -1,7 +1,7 @@
 package com.dralsoft.inventory.list.domain
 
 import com.dralsoft.inventory.list.data.ListInventoryRepository
-import com.dralsoft.inventory.list.data.network.response.ListInventoryResponse
+import com.dralsoft.inventory.list.data.response.ListInventoryResponse
 import retrofit2.Response
 import javax.inject.Inject
 
