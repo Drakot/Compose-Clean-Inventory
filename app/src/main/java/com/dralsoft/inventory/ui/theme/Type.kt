@@ -8,18 +8,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.dralsoft.inventory.R
 
-
 val fonts = FontFamily(
-    Font(R.font.qanelas),
     Font(R.font.qanelas_bold, FontWeight.Bold),
     Font(R.font.qanelas_semibold, FontWeight.SemiBold),
-    Font(R.font.qanelas_light, FontWeight.Light),
     Font(R.font.qanelas_light, FontWeight.Light),
     Font(R.font.qanelas_medium, FontWeight.Medium),
     Font(R.font.qanelas_regular, FontWeight.Normal),
 )
 
-// Set of Material typography styles to start with
 val Typography = Typography(
     body1 = TextStyle(
         fontFamily = fonts,
@@ -42,6 +38,12 @@ val Typography = Typography(
     h3 = TextStyle(
         fontFamily = fonts,
         fontWeight = FontWeight.Medium,
+        fontSize = 16.sp
+    ),
+
+    h4 = TextStyle(
+        fontFamily = fonts,
+        fontWeight = FontWeight.Thin,
         fontSize = 16.sp
     )
     /* Other default text styles to override

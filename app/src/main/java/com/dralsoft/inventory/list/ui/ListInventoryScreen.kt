@@ -34,7 +34,7 @@ fun ListInventoryScreen(navController: NavController, viewModel: ListInventoryVi
     val state = viewModel.uiStateFlow.collectAsState().value
 
     Box(modifier = Modifier.fillMaxSize()) {
-        ScaffoldView {
+        ScaffoldView(true) {
             when (state) {
                 is UiState.Loading -> {
                     Loading()

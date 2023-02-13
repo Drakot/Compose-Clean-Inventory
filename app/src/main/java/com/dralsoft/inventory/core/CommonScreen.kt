@@ -9,8 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.dralsoft.inventory.core.ui.MyTopAppBar
 import com.dralsoft.inventory.core.ui.MyFab
+import com.dralsoft.inventory.core.ui.MyTopAppBar
 import kotlinx.coroutines.launch
 
 @Composable
@@ -38,7 +38,7 @@ fun Loading() {
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun ScaffoldView(Content: @Composable () -> Unit) {
+fun ScaffoldView(showFAB: Boolean = false, Content: @Composable () -> Unit) {
     val state = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
 
@@ -56,7 +56,9 @@ fun ScaffoldView(Content: @Composable () -> Unit) {
         }, scaffoldState = state,
 
         floatingActionButton = {
-            MyFab()
+            if (showFAB) {
+                MyFab()
+            }
         }
     ) {
         Content()

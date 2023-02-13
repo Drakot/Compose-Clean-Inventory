@@ -1,7 +1,9 @@
 package com.dralsoft.inventory.detail.ui
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -35,7 +37,12 @@ fun InventoryScreen(
                     ErrorView(state.errorMessage)
                 }
                 is UiState.Success -> {
-                    OnSuccess(state)
+                    Column() {
+                        Text(text = "weee")
+                        Button(onClick = { }) {
+                            Text(text = "Button")
+                        }
+                    }
                 }
                 UiState.Empty -> {
                 }
@@ -45,11 +52,11 @@ fun InventoryScreen(
 
     LaunchedEffect(Unit) {
         viewModel.singleEventFlow.collectLatest {
-          /*  when (it) {
-                is ListUiSingleEvent.OpenDetailScreen -> {
-                    navController.navigate(it.navRoute)
-                }
-            }*/
+            /*  when (it) {
+                  is ListUiSingleEvent.OpenDetailScreen -> {
+                      navController.navigate(it.navRoute)
+                  }
+              }*/
         }
     }
 
@@ -57,7 +64,7 @@ fun InventoryScreen(
 
 @Composable
 fun OnSuccess(state: UiState.Success<InventoryResponse>) {
-    Text(text = "weee")
+
 }
 
 

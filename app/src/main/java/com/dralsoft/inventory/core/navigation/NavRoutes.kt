@@ -7,9 +7,7 @@ import androidx.navigation.navArgument
 
 private const val ROUTE_INVENTORIES = "inventory"
 private const val ROUTE_INVENTORY = "inventory/%s"
-private const val ROUTE_USER = "users/%s"
 private const val ARG_INVENTORY_ID = "inventoryId"
-private const val ARG_USER_ID = "userId"
 
 sealed class NavRoutes(
     val route: String,
