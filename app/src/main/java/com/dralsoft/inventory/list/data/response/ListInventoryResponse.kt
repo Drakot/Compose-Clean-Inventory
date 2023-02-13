@@ -7,7 +7,7 @@ data class ListInventoryResponse(
 
 data class InventoryItem(
     val attributes: InventoryAttributes,
-    val id: Int
+    val id: Long
 )
 
 data class InventoryAttributes(

@@ -1,5 +1,6 @@
 package com.dralsoft.inventory.list.ui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -30,10 +31,7 @@ import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun ListInventoryScreen(navController: NavController, viewModel: ListInventoryViewModel = hiltViewModel()) {
-
     val state = viewModel.uiStateFlow.collectAsState().value
-
-    //viewModel.submitAction(ListUiAction.Load)
 
     Box(modifier = Modifier.fillMaxSize()) {
         ScaffoldView {
@@ -45,7 +43,9 @@ fun ListInventoryScreen(navController: NavController, viewModel: ListInventoryVi
                     ErrorView(state.errorMessage)
                 }
                 is UiState.Success -> {
-                    OnSuccess(state)
+                    OnSuccess(state) {
+                        viewModel.submitAction(ListUiAction.InventoryClick(it.id))
+                    }
                 }
                 UiState.Empty -> {
                     Text(text = LocalContext.current.getString(com.dralsoft.inventory.R.string.list_inventory_empty))
@@ -66,21 +66,24 @@ fun ListInventoryScreen(navController: NavController, viewModel: ListInventoryVi
 
 }
 
-
 @Composable
-fun OnSuccess(state: UiState.Success<ListInventoryResponse>) {
-
-
+fun OnSuccess(state: UiState.Success<ListInventoryResponse>, onItemSelected: (InventoryItem) -> Unit) {
     LazyVerticalGrid(columns = GridCells.Fixed(2), content = {
         items(items = state.data.data) {
-            InventoryItemView(it)
+            InventoryItemView(it) { inventoryItem ->
+                onItemSelected(inventoryItem)
+            }
         }
     }, contentPadding = PaddingValues(0.dp))
 }
 
 @Composable
-fun InventoryItemView(inventoryItem: InventoryItem) {
-    Column(modifier = Modifier.padding(8.dp)) {
+fun InventoryItemView(inventoryItem: InventoryItem, onItemSelected: (InventoryItem) -> Unit) {
+    Column(modifier = Modifier
+        .padding(8.dp)
+        .clickable {
+            onItemSelected(inventoryItem)
+        }) {
         AsyncImage(
             modifier = Modifier
                 .fillMaxWidth()

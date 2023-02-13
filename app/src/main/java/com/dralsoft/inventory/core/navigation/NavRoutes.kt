@@ -25,7 +25,7 @@ sealed class NavRoutes(
         })
     ) {
 
-        fun routeForPost(postInput: InventoryItemInput) = String.format(ROUTE_INVENTORY, postInput.id)
+        fun routeForInventory(inventoryInput: InventoryItemInput) = String.format(ROUTE_INVENTORY, inventoryInput.id)
 
         fun fromEntry(entry: NavBackStackEntry): InventoryItemInput {
             return InventoryItemInput(entry.arguments?.getLong(ARG_INVENTORY_ID) ?: 0L)

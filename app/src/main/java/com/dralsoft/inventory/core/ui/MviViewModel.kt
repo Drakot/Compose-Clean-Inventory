@@ -15,8 +15,10 @@ abstract class MviViewModel<T : Any, S : UiState<T>, A : UiAction, E : UiSingleE
     private val _uiStateFlow: MutableStateFlow<S> by lazy {
         MutableStateFlow(initState())
     }
+
     val uiStateFlow: StateFlow<S> = _uiStateFlow
     private val actionFlow: MutableSharedFlow<A> = MutableSharedFlow()
+
     private val _singleEventFlow = Channel<E>()
     val singleEventFlow = _singleEventFlow.receiveAsFlow()
 

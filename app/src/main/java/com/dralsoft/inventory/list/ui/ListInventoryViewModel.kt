@@ -1,6 +1,8 @@
 package com.dralsoft.inventory.list.ui
 
 import androidx.lifecycle.viewModelScope
+import com.dralsoft.inventory.core.navigation.InventoryItemInput
+import com.dralsoft.inventory.core.navigation.NavRoutes
 import com.dralsoft.inventory.core.ui.MviViewModel
 import com.dralsoft.inventory.core.ui.UiSingleEvent
 import com.dralsoft.inventory.core.ui.UiState
@@ -24,12 +26,16 @@ class ListInventoryViewModel @Inject constructor(private val useCase: ListInvent
             is ListUiAction.Load -> {
                 load()
             }
-            is ListUiAction.PostClick -> {
-
+            is ListUiAction.InventoryClick -> {
+                submitSingleEvent(
+                    ListUiSingleEvent.OpenDetailScreen(
+                        NavRoutes.Inventory.routeForInventory(
+                            InventoryItemInput(action.id)
+                        )
+                    )
+                )
             }
-            is ListUiAction.UserClick -> {
 
-            }
         }
     }
 
