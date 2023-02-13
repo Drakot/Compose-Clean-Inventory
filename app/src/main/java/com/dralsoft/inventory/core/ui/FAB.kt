@@ -1,4 +1,4 @@
-package com.dralsoft.inventory.list.ui
+package com.dralsoft.inventory.core.ui
 
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon

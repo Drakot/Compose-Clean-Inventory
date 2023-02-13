@@ -13,6 +13,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.dralsoft.inventory.core.navigation.NavRoutes
+import com.dralsoft.inventory.detail.ui.InventoryScreen
 import com.dralsoft.inventory.list.ui.ListInventoryScreen
 import com.dralsoft.inventory.ui.theme.InventoryTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -39,11 +40,11 @@ fun App(navController: NavHostController) {
         composable(route = NavRoutes.Inventories.route) {
             ListInventoryScreen(navController)
         }
-      /*  composable(
+        composable(
             route = NavRoutes.Inventory.route,
             arguments = NavRoutes.Inventory.arguments
         ) {
-            ListInventoryScreen(navController = NavRoutes.Inventory.fromEntry(it))
-        }*/
+            InventoryScreen(navController, NavRoutes.Inventory.fromEntry(it))
+        }
     }
 }

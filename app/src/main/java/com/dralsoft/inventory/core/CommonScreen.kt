@@ -10,7 +10,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.dralsoft.inventory.core.ui.MyTopAppBar
-import com.dralsoft.inventory.list.ui.MyFab
+import com.dralsoft.inventory.core.ui.MyFab
 import kotlinx.coroutines.launch
 
 @Composable

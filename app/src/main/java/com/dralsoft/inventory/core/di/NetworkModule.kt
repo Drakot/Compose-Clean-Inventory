@@ -1,6 +1,6 @@
 package com.dralsoft.inventory.core.di
 
-import com.dralsoft.inventory.list.data.local.LocalStorage
+import com.dralsoft.inventory.detail.data.network.InventoryClient
 import com.dralsoft.inventory.list.data.network.ListInventoryClient
 import dagger.Module
 import dagger.Provides
@@ -32,7 +32,7 @@ class NetworkModule {
 
     @Provides
     @Singleton
-    fun provideMockListData(): LocalStorage {
-        return LocalStorage()
+    fun provideClient(retrofit: Retrofit): InventoryClient {
+        return retrofit.create(InventoryClient::class.java)
     }
 }
