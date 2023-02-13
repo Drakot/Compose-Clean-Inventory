@@ -5,7 +5,11 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -76,19 +80,23 @@ fun OnSuccess(state: UiState.Success<InventoryResponse>) {
 fun Form(viewModel: InventoryViewModel) {
     val context = LocalContext.current
     val modifier = Modifier.fillMaxWidth()
+
+    val name = rememberSaveable { mutableStateOf("") }
+    val desc = rememberSaveable { mutableStateOf("") }
     Column(modifier = Modifier.padding(16.dp)) {
 
         Name(
-            "",
+            name.value,
             TextTypeInfo(context.getString(com.dralsoft.inventory.R.string.name), KeyboardType.Text),
             modifier.align(Alignment.CenterHorizontally)
         ) {
+            name.value = it
             viewModel.submitAction(InventoryUiAction.NameChanged(it))
         }
         MySpacer(16)
 
         Name(
-            "",
+            desc.value,
             TextTypeInfo(context.getString(com.dralsoft.inventory.R.string.desc), KeyboardType.Text),
             modifier.align(Alignment.CenterHorizontally)
         ) {
@@ -115,9 +123,9 @@ fun Form(viewModel: InventoryViewModel) {
 
 @Composable
 fun Name(text: String, info: TextTypeInfo, modifier: Modifier, onTextChange: (String) -> Unit) {
-    val typedText = remember { mutableStateOf("") }
+
     OutlinedTextField(
-        value = typedText.value, onValueChange = { onTextChange(it) },
+        value = text, onValueChange = { onTextChange(it) },
         modifier = modifier,
         placeholder = {
             Text(text = info.text)
