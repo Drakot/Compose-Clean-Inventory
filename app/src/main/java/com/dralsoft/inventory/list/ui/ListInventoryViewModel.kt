@@ -14,6 +14,10 @@ import javax.inject.Inject
 class ListInventoryViewModel @Inject constructor(private val useCase: ListInventoryUseCase) :
     MviViewModel<ListInventoryResponse, UiState<ListInventoryResponse>, ListUiAction, UiSingleEvent>() {
 
+    init {
+        handleAction(ListUiAction.Load)
+    }
+
     override fun initState(): UiState<ListInventoryResponse> = UiState.Loading
     override fun handleAction(action: ListUiAction) {
         when (action) {
