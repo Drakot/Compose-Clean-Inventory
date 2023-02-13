@@ -1,14 +1,13 @@
 package com.dralsoft.inventory.detail.ui
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Button
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.compose.material.TextFieldDefaults
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.dralsoft.inventory.core.ErrorView
@@ -27,8 +26,21 @@ fun InventoryScreen(
 ) {
     val state = viewModel.uiStateFlow.collectAsState().value
 
+
+    viewModel.submitAction(InventoryUiAction.Load(inventoryItemInput.id))
+
+
     Box(modifier = Modifier.fillMaxSize()) {
         ScaffoldView {
+            val modifier = Modifier.fillMaxWidth()
+            Column() {
+                MyTextFieldOutlined(
+                    modifier
+                        .align(Alignment.CenterHorizontally)
+                )
+            }
+
+
             when (state) {
                 is UiState.Loading -> {
                     Loading()
@@ -37,12 +49,12 @@ fun InventoryScreen(
                     ErrorView(state.errorMessage)
                 }
                 is UiState.Success -> {
-                    Column() {
-                        Text(text = "weee")
-                        Button(onClick = { }) {
-                            Text(text = "Button")
-                        }
-                    }
+                    /*   Column() {
+                           Text(text = "weee")
+                           Button(onClick = { }) {
+                               Text(text = "Button")
+                           }
+                       }*/
                 }
                 UiState.Empty -> {
                 }
@@ -67,4 +79,21 @@ fun OnSuccess(state: UiState.Success<InventoryResponse>) {
 
 }
 
+
+@Composable
+fun MyTextFieldOutlined(modifier: Modifier) {
+    var myText by remember { mutableStateOf("") }
+    OutlinedTextField(
+        value = myText,
+        onValueChange = {
+            myText = it
+        },
+        modifier = modifier
+            .padding(16.dp),
+        label = { Text(text = "Introduce tu nombre") },
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            //   focusedBorderColor = Color.Magenta, unfocusedBorderColor = Color.Red
+        )
+    )
+}
 
