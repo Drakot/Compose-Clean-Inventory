@@ -23,7 +23,15 @@ class InventoryViewModel @Inject constructor(private val useCase: InventoryUseCa
             is InventoryUiAction.InventoryClick -> {
 
             }
+            is InventoryUiAction.AmountChanged -> {
 
+            }
+            is InventoryUiAction.DescChanged -> {
+
+            }
+            is InventoryUiAction.NameChanged -> {
+
+            }
         }
     }
 

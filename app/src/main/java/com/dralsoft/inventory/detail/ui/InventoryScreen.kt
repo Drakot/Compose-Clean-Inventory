@@ -1,12 +1,15 @@
 package com.dralsoft.inventory.detail.ui
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Button
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -14,6 +17,7 @@ import com.dralsoft.inventory.core.ErrorView
 import com.dralsoft.inventory.core.Loading
 import com.dralsoft.inventory.core.ScaffoldView
 import com.dralsoft.inventory.core.navigation.InventoryItemInput
+import com.dralsoft.inventory.core.ui.MySpacer
 import com.dralsoft.inventory.core.ui.UiState
 import com.dralsoft.inventory.detail.data.response.InventoryResponse
 import kotlinx.coroutines.flow.collectLatest
@@ -32,14 +36,7 @@ fun InventoryScreen(
 
     Box(modifier = Modifier.fillMaxSize()) {
         ScaffoldView {
-            val modifier = Modifier.fillMaxWidth()
-            Column() {
-                MyTextFieldOutlined(
-                    modifier
-                        .align(Alignment.CenterHorizontally)
-                )
-            }
-
+            Form(viewModel)
 
             when (state) {
                 is UiState.Loading -> {
@@ -49,12 +46,7 @@ fun InventoryScreen(
                     ErrorView(state.errorMessage)
                 }
                 is UiState.Success -> {
-                    /*   Column() {
-                           Text(text = "weee")
-                           Button(onClick = { }) {
-                               Text(text = "Button")
-                           }
-                       }*/
+
                 }
                 UiState.Empty -> {
                 }
@@ -81,19 +73,66 @@ fun OnSuccess(state: UiState.Success<InventoryResponse>) {
 
 
 @Composable
-fun MyTextFieldOutlined(modifier: Modifier) {
-    var myText by remember { mutableStateOf("") }
+fun Form(viewModel: InventoryViewModel) {
+    val context = LocalContext.current
+    val modifier = Modifier.fillMaxWidth()
+    Column(modifier = Modifier.padding(16.dp)) {
+
+        Name(
+            "",
+            TextTypeInfo(context.getString(com.dralsoft.inventory.R.string.name), KeyboardType.Text),
+            modifier.align(Alignment.CenterHorizontally)
+        ) {
+            viewModel.submitAction(InventoryUiAction.NameChanged(it))
+        }
+        MySpacer(16)
+
+        Name(
+            "",
+            TextTypeInfo(context.getString(com.dralsoft.inventory.R.string.desc), KeyboardType.Text),
+            modifier.align(Alignment.CenterHorizontally)
+        ) {
+            viewModel.submitAction(InventoryUiAction.DescChanged(it))
+        }
+        MySpacer(16)
+
+        Name(
+            "",
+            TextTypeInfo(context.getString(com.dralsoft.inventory.R.string.amount), KeyboardType.Number),
+            modifier.align(Alignment.CenterHorizontally)
+        ) {
+            viewModel.submitAction(InventoryUiAction.AmountChanged(it.toInt()))
+        }
+
+        MySpacer(16)
+
+        Button(modifier = modifier.height(55.dp), onClick = { }) {
+            Text(text = context.getString(com.dralsoft.inventory.R.string.save))
+        }
+    }
+}
+
+
+@Composable
+fun Name(text: String, info: TextTypeInfo, modifier: Modifier, onTextChange: (String) -> Unit) {
+    val typedText = remember { mutableStateOf("") }
     OutlinedTextField(
-        value = myText,
-        onValueChange = {
-            myText = it
+        value = typedText.value, onValueChange = { onTextChange(it) },
+        modifier = modifier,
+        placeholder = {
+            Text(text = info.text)
         },
-        modifier = modifier
-            .padding(16.dp),
-        label = { Text(text = "Introduce tu nombre") },
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            //   focusedBorderColor = Color.Magenta, unfocusedBorderColor = Color.Red
-        )
+        maxLines = 1,
+        singleLine = true,
+        keyboardOptions = KeyboardOptions(keyboardType = info.type),
+        /* colors = TextFieldDefaults.textFieldColors(
+             backgroundColor = Color(0xFFFaFaFa),
+             focusedIndicatorColor = Color.Transparent,
+             unfocusedIndicatorColor = Color.Transparent,
+             cursorColor = Color.Black,
+             textColor = Color(0xFFB2B2B2)
+         )*/
     )
 }
 
+data class TextTypeInfo(val text: String, val type: KeyboardType)

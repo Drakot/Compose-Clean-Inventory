@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">Inventory</string>
     <string name="list_inventory_empty">No data yet</string>
+    <string name="save">Save</string>
+    <string name="name">Name</string>
+    <string name="desc">Description</string>
+    <string name="amount">Amount</string>
 </resources>
