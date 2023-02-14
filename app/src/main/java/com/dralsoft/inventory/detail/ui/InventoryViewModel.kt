@@ -1,6 +1,7 @@
 package com.dralsoft.inventory.detail.ui
 
 import androidx.lifecycle.viewModelScope
+import com.dralsoft.inventory.core.ui.InventoryUiState
 import com.dralsoft.inventory.core.ui.MviViewModel
 import com.dralsoft.inventory.core.ui.UiSingleEvent
 import com.dralsoft.inventory.core.ui.UiState
@@ -12,9 +13,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class InventoryViewModel @Inject constructor(private val useCase: InventoryUseCase) :
-    MviViewModel<InventoryResponse, UiState<InventoryResponse>, InventoryUiAction, UiSingleEvent>() {
+    MviViewModel<InventoryResponse, InventoryUiState<InventoryResponse>, InventoryUiAction, UiSingleEvent>() {
 
-    override fun initState(): UiState<InventoryResponse> = UiState.Loading
+    override fun initState(): InventoryUiState<InventoryResponse> = InventoryUiState<InventoryResponse>
     override fun handleAction(action: InventoryUiAction) {
         when (action) {
             is InventoryUiAction.Load -> {

@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.data.EmptyGroup.name
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -81,8 +82,6 @@ fun Form(viewModel: InventoryViewModel) {
     val context = LocalContext.current
     val modifier = Modifier.fillMaxWidth()
 
-    val name = rememberSaveable { mutableStateOf("") }
-    val desc = rememberSaveable { mutableStateOf("") }
     Column(modifier = Modifier.padding(16.dp)) {
 
         Name(
