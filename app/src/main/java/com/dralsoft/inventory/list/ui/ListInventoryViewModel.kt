@@ -3,34 +3,31 @@ package com.dralsoft.inventory.list.ui
 import androidx.lifecycle.viewModelScope
 import com.dralsoft.inventory.core.navigation.InventoryItemInput
 import com.dralsoft.inventory.core.navigation.NavRoutes
-import com.dralsoft.inventory.core.ui.MviViewModel
-import com.dralsoft.inventory.core.ui.UiSingleEvent
-import com.dralsoft.inventory.core.ui.UiState
-import com.dralsoft.inventory.list.data.response.ListInventoryResponse
+import com.dralsoft.inventory.core.ui.AbstractMviViewModel
 import com.dralsoft.inventory.list.domain.ListInventoryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ListInventoryViewModel @Inject constructor(private val useCase: ListInventoryUseCase) :
-    MviViewModel<ListInventoryResponse, UiState<ListInventoryResponse>, ListUiAction, UiSingleEvent>() {
+class ListInventoryViewModel @Inject constructor(
+    private val useCase: ListInventoryUseCase
+) : AbstractMviViewModel<ListIntent, ListInventoryState, ListUiSingleEvent>() {
 
     init {
-        handleAction(ListUiAction.Load)
+        submitIntent(ListIntent.Load)
     }
 
-    override fun initState(): UiState<ListInventoryResponse> = UiState.Loading
-    override fun handleAction(action: ListUiAction) {
-        when (action) {
-            is ListUiAction.Load -> {
+    override fun submitIntent(intent: ListIntent) {
+        when (intent) {
+            is ListIntent.Load -> {
                 load()
             }
-            is ListUiAction.InventoryClick -> {
+            is ListIntent.InventoryClick -> {
                 submitSingleEvent(
                     ListUiSingleEvent.OpenDetailScreen(
                         NavRoutes.Inventory.routeForInventory(
-                            InventoryItemInput(action.id)
+                            InventoryItemInput(intent.id)
                         )
                     )
                 )
@@ -39,16 +36,19 @@ class ListInventoryViewModel @Inject constructor(private val useCase: ListInvent
         }
     }
 
+    override fun initState(): ListInventoryState = ListInventoryState()
+
+
     private fun load() {
         viewModelScope.launch {
             val response = useCase.invoke()
 
             if (response.isSuccessful) {
                 response.body()?.let {
-                    submitState(UiState.Success(it))
+                    submitState(viewState.value.copy(data = it.data))
                 }
             } else {
-                submitState(UiState.Error(response.message()))
+                submitSingleEvent(ListUiSingleEvent.Error(response.message()))
             }
         }
     }

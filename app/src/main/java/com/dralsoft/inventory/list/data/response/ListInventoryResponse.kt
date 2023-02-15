@@ -6,17 +6,17 @@ data class ListInventoryResponse(
 )
 
 data class InventoryItem(
-    val attributes: InventoryAttributes,
-    val id: Long
+    val id: Long,
+    val attributes: InventoryAttributes
 )
 
 data class InventoryAttributes(
-    val amount: Int,
-    val description: String,
-    val location: String,
     val name: String,
-    val order: Int,
-    val pictures: List<String>,
-    val status: String,
-    val updatedAt: String
+    val description: String,
+    val amount: Int,
+    val location: String = "",
+    val order: Int = 0,
+    val pictures: List<String> = arrayListOf(),
+    val status: String = "",
+    val updatedAt: String = ""
 )

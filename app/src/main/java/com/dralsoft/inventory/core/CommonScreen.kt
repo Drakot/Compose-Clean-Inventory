@@ -1,6 +1,9 @@
 package com.dralsoft.inventory.core
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,13 +29,20 @@ fun ErrorView(errorMessage: String) {
 }
 
 @Composable
-fun Loading() {
-    Column(
+fun Loading(isLoading: Boolean) {
+    AnimatedVisibility(
         modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
+        visible = isLoading,
+        enter = fadeIn(),
+        exit = fadeOut(),
     ) {
-        CircularProgressIndicator()
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            CircularProgressIndicator()
+        }
     }
 }
 

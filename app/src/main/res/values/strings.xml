@@ -5,4 +5,5 @@
     <string name="name">Name</string>
     <string name="desc">Description</string>
     <string name="amount">Amount</string>
+    <string name="added_inventory">Inventory item added successfully</string>
 </resources>

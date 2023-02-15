@@ -12,11 +12,12 @@ class InventoryLocalStorage {
         return Response.success(
             InventoryResponse(
                 InventoryItem(
+                    1,
                     InventoryAttributes(
-                        6,
-                        "description",
-                        "Cajonera dentro de Armario",
                         "Relay 5V",
+                        "description",
+                        6,
+                        "Cajonera dentro de Armario",
                         1,
                         listOf(
                             "https://static.cytron.io/image/cache/catalog/products/BB-RELAY-5V-01/BB-RELAY-5V-01-800x800.jpg",
@@ -24,7 +25,7 @@ class InventoryLocalStorage {
                         ),
                         "OK",
                         "2021-01-01T00:00:00.000Z"
-                    ), 1
+                    )
                 )
             )
         )
