@@ -1,4 +1,4 @@
-package com.dralsoft.inventory.core.ui
+package com.dralsoft.inventory.core.ui.mvi
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect

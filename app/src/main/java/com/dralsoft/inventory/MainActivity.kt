@@ -40,6 +40,9 @@ fun App(navController: NavHostController) {
         composable(route = NavRoutes.Inventories.route) {
             ListInventoryScreen(navController)
         }
+        composable(route = NavRoutes.NewInventory.route) {
+            InventoryScreen(navController)
+        }
         composable(
             route = NavRoutes.Inventory.route,
             arguments = NavRoutes.Inventory.arguments

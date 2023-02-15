@@ -1,4 +1,4 @@
-package com.dralsoft.inventory.core.ui
+package com.dralsoft.inventory.core.ui.mvi
 
 import android.os.Build
 import android.os.Looper

@@ -1,4 +1,4 @@
-package com.dralsoft.inventory.core.ui
+package com.dralsoft.inventory.core.ui.mvi
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow

@@ -8,7 +8,7 @@ import retrofit2.Response
 
 class InventoryLocalStorage {
     suspend fun getInventory(id: Long): Response<InventoryResponse> {
-        delay(300)
+        delay(500)
         return Response.success(
             InventoryResponse(
                 InventoryItem(

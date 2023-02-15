@@ -18,20 +18,21 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.dralsoft.inventory.R
 import com.dralsoft.inventory.core.ScaffoldView
+import com.dralsoft.inventory.core.ViewConfig
 import com.dralsoft.inventory.core.navigation.InventoryItemInput
 import com.dralsoft.inventory.core.ui.MySpacer
-import com.dralsoft.inventory.core.ui.collectInLaunchedEffectWithLifecycle
+import com.dralsoft.inventory.core.ui.mvi.collectInLaunchedEffectWithLifecycle
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
 fun InventoryScreen(
     navController: NavController,
-    inventoryItemInput: InventoryItemInput,
+    inventoryItemInput: InventoryItemInput? = null,
     viewModel: InventoryViewModel = hiltViewModel()
 ) {
 
-    viewModel.submitIntent(InventoryIntent.Load(inventoryItemInput.id))
+    viewModel.submitIntent(InventoryIntent.Load(inventoryItemInput?.id))
 
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -64,7 +65,9 @@ fun InventoryScreen(
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        ScaffoldView {
+        ScaffoldView(ViewConfig(showBackButton = true), onClickNavIcon = {
+            navController.popBackStack()
+        }) {
             Form(viewModel)
         }
     }
@@ -83,7 +86,6 @@ fun Form(viewModel: InventoryViewModel) {
             TextTypeInfo(context.getString(com.dralsoft.inventory.R.string.name), KeyboardType.Text),
             modifier.align(Alignment.CenterHorizontally)
         ) {
-            // state.name.value = it
             viewModel.submitIntent(InventoryIntent.NameChanged(it))
         }
         MySpacer(16)
@@ -107,7 +109,7 @@ fun Form(viewModel: InventoryViewModel) {
 
         MySpacer(16)
 
-        Button(modifier = modifier.height(55.dp), onClick = {
+        Button(enabled = !state.isLoading, modifier = modifier.height(55.dp), onClick = {
             viewModel.submitIntent(InventoryIntent.Save)
         }) {
             Text(text = context.getString(com.dralsoft.inventory.R.string.save))

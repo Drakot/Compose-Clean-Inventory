@@ -3,7 +3,7 @@ package com.dralsoft.inventory.list.ui
 import androidx.lifecycle.viewModelScope
 import com.dralsoft.inventory.core.navigation.InventoryItemInput
 import com.dralsoft.inventory.core.navigation.NavRoutes
-import com.dralsoft.inventory.core.ui.AbstractMviViewModel
+import com.dralsoft.inventory.core.ui.mvi.AbstractMviViewModel
 import com.dralsoft.inventory.list.domain.ListInventoryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -21,6 +21,7 @@ class ListInventoryViewModel @Inject constructor(
     override fun submitIntent(intent: ListIntent) {
         when (intent) {
             is ListIntent.Load -> {
+                submitState(viewState.value.copy(isLoading = true))
                 load()
             }
             is ListIntent.InventoryClick -> {
@@ -32,7 +33,13 @@ class ListInventoryViewModel @Inject constructor(
                     )
                 )
             }
-
+            ListIntent.AddInventory -> {
+                submitSingleEvent(
+                    ListUiSingleEvent.OpenDetailScreen(
+                        NavRoutes.NewInventory.route
+                    )
+                )
+            }
         }
     }
 
@@ -42,7 +49,7 @@ class ListInventoryViewModel @Inject constructor(
     private fun load() {
         viewModelScope.launch {
             val response = useCase.invoke()
-
+            submitState(viewState.value.copy(isLoading = false))
             if (response.isSuccessful) {
                 response.body()?.let {
                     submitState(viewState.value.copy(data = it.data))

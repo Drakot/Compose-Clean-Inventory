@@ -46,28 +46,31 @@ fun Loading(isLoading: Boolean) {
     }
 }
 
+data class ViewConfig(val showFAB: Boolean = false, val showBackButton: Boolean = false)
+
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun ScaffoldView(showFAB: Boolean = false, Content: @Composable () -> Unit) {
+fun ScaffoldView(
+    viewConfig: ViewConfig = ViewConfig(),
+    onClickNavIcon: () -> Unit = {},
+    onFABClick: () -> Unit = {},
+    Content: @Composable () -> Unit,
+    ) {
     val state = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
         topBar = {
-            MyTopAppBar(onClick = {
+            MyTopAppBar(viewConfig, onClick = {
                 coroutineScope.launch {
                     state.snackbarHostState.showSnackbar(it)
                 }
-            }, onClickDrawer = {
-                coroutineScope.launch {
-                    state.drawerState.open()
-                }
-            })
+            }, onClickNavIcon = onClickNavIcon)
         }, scaffoldState = state,
 
         floatingActionButton = {
-            if (showFAB) {
-                MyFab()
+            if (viewConfig.showFAB) {
+                MyFab(onFABClick)
             }
         }
     ) {

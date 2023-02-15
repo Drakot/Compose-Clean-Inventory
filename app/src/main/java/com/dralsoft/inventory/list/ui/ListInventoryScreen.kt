@@ -21,7 +21,8 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.dralsoft.inventory.core.Loading
 import com.dralsoft.inventory.core.ScaffoldView
-import com.dralsoft.inventory.core.ui.collectInLaunchedEffectWithLifecycle
+import com.dralsoft.inventory.core.ViewConfig
+import com.dralsoft.inventory.core.ui.mvi.collectInLaunchedEffectWithLifecycle
 import com.dralsoft.inventory.list.data.response.InventoryItem
 
 @Composable
@@ -29,7 +30,9 @@ fun ListInventoryScreen(navController: NavController, viewModel: ListInventoryVi
     val state = viewModel.viewState.collectAsState().value
 
     Box(modifier = Modifier.fillMaxSize()) {
-        ScaffoldView(true) {
+        ScaffoldView(ViewConfig(showFAB = true), onFABClick = {
+            viewModel.submitIntent(ListIntent.AddInventory)
+        }) {
             Loading(state.isLoading)
 
             OnSuccess(state) {

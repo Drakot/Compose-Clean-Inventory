@@ -8,10 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 @Composable
-fun MyFab() {
-    FloatingActionButton(contentColor = Color.White, backgroundColor = Color.Blue, onClick = {
-
-    }) {
+fun MyFab(onFABClick: () -> Unit= {}) {
+    FloatingActionButton(contentColor = Color.White, backgroundColor = Color.Blue, onClick = onFABClick) {
         Icon(imageVector = Icons.Filled.Add, contentDescription = "add")
     }
 }

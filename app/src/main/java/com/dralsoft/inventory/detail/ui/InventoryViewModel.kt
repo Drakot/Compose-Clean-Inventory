@@ -1,7 +1,8 @@
 package com.dralsoft.inventory.detail.ui
 
+import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.viewModelScope
-import com.dralsoft.inventory.core.ui.AbstractMviViewModel
+import com.dralsoft.inventory.core.ui.mvi.AbstractMviViewModel
 import com.dralsoft.inventory.detail.data.response.InventoryResponse
 import com.dralsoft.inventory.detail.domain.InventoryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,8 +26,8 @@ class InventoryViewModel @Inject constructor(
                 onSave()
             }
             is InventoryIntent.AmountChanged -> {
-                if(intent.amount.isEmpty()) {
-                    submitState(viewState.value.copy(amount = 0))
+                if (intent.amount.isNotEmpty() && intent.amount.isDigitsOnly()) {
+                    submitState(viewState.value.copy(amount = intent.amount))
                     return
                 }
             }
@@ -48,12 +49,20 @@ class InventoryViewModel @Inject constructor(
 
     private fun load(inventoryId: Long?) {
         viewModelScope.launch {
+            submitState(viewState.value.copy(isLoading = true))
             inventoryId?.let {
                 val response = useCase.invoke(inventoryId)
-
+                submitState(viewState.value.copy(isLoading = false))
                 if (response.isSuccessful) {
                     response.body()?.let {
-                        submitSingleEvent(InventorySingleEvent.OnLoadSuccess(it))
+                        submitState(
+                            viewState.value.copy(
+                                it.data.id,
+                                it.data.attributes.name,
+                                it.data.attributes.description,
+                                it.data.attributes.amount.toString()
+                            )
+                        )
                     }
                 } else {
                     submitSingleEvent(InventorySingleEvent.Error(response.message()))

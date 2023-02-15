@@ -1,8 +1,8 @@
 package com.dralsoft.inventory.detail.ui
 
-import com.dralsoft.inventory.core.ui.MviIntent
-import com.dralsoft.inventory.core.ui.MviSingleEvent
-import com.dralsoft.inventory.core.ui.MviViewState
+import com.dralsoft.inventory.core.ui.mvi.MviIntent
+import com.dralsoft.inventory.core.ui.mvi.MviSingleEvent
+import com.dralsoft.inventory.core.ui.mvi.MviViewState
 import com.dralsoft.inventory.list.data.response.InventoryAttributes
 import com.dralsoft.inventory.list.data.response.InventoryItem
 
@@ -19,10 +19,11 @@ data class InventoryState(
     val id: Long = 0,
     val name: String = "",
     val description: String = "",
-    val amount: Int = 0
-) : MviViewState{
+    val amount: String = "",
+    val isLoading: Boolean = false
+) : MviViewState {
     //function named map that creates an instance of InventoryItem
-    fun map() = InventoryItem(id, InventoryAttributes(name, description, amount))
+    fun map() = InventoryItem(id, InventoryAttributes(name, description, amount.toIntOrNull() ?: 0))
 }
 
 sealed class InventorySingleEvent<out T : Any> : MviSingleEvent {
