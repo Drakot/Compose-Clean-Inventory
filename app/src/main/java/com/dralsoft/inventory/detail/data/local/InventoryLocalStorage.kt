@@ -30,4 +30,12 @@ class InventoryLocalStorage {
             )
         )
     }
+
+    fun saveInventory(item: InventoryItem): Response<InventoryResponse> {
+        return Response.success(
+            InventoryResponse(
+                item
+            )
+        )
+    }
 }

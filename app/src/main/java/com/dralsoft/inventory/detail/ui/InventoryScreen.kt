@@ -100,7 +100,7 @@ fun Form(viewModel: InventoryViewModel) {
         MySpacer(16)
 
         Name(
-            state.amount.toString(),
+            state.amount,
             TextTypeInfo(context.getString(com.dralsoft.inventory.R.string.amount), KeyboardType.Number),
             modifier.align(Alignment.CenterHorizontally)
         ) {
