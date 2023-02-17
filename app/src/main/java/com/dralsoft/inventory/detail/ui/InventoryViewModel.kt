@@ -35,12 +35,15 @@ class InventoryViewModel @Inject constructor(
             }
 
             is InventoryIntent.AmountChanged -> {
+
                 val amountResult = validateAmount.execute(intent.amount)
                 if (!amountResult.successful) {
-                    submitState(viewState.value.copy(amountError = amountResult.errorMessage))
+                    submitState(viewState.value.copy(amountError = amountResult.errorMessage, saveEnabled = false))
                 } else {
                     submitState(viewState.value.copy(amount = intent.amount))
                 }
+
+                checkFields()
             }
 
             is InventoryIntent.DescChanged -> {
@@ -54,8 +57,25 @@ class InventoryViewModel @Inject constructor(
                 }
 
                 submitState(viewState.value.copy(name = intent.name))
+                checkFields()
             }
         }
+    }
+
+    private fun checkFields() {
+        val amountResult = validateAmount.execute(viewState.value.amount)
+        if (!amountResult.successful) {
+            submitState(viewState.value.copy(saveEnabled = false))
+            return
+        }
+
+        val nameResult = validateName.execute(viewState.value.name)
+        if (!nameResult.successful) {
+            submitState(viewState.value.copy(saveEnabled = false))
+            return
+        }
+        submitState(viewState.value.copy(saveEnabled = true))
+
     }
 
     private fun onSave() {
