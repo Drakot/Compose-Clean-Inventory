@@ -1,5 +1,6 @@
 package com.dralsoft.inventory.detail.ui
 
+import android.util.Log
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.viewModelScope
 import com.dralsoft.inventory.core.domain.ValidationResult
@@ -16,6 +17,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -42,16 +44,19 @@ class InventoryViewModel @Inject constructor(
                 is InventoryIntent.AmountChanged -> {
 
                     val amountResult = validateAmount.execute(intent.amount)
-                    if (!amountResult) {
-                        submitState(viewState.value.copy(amountError = amountResult.errorMessage, saveEnabled = false))
-                        if (intent.amount.isEmpty())
-                            submitState(viewState.value.copy(amount = intent.amount))
-                    } else {
 
+                    checkField(amountResult) {
+                        if (!it.successful) {
+                            submitState(viewState.value.copy(amountError = it.errorMessage))
+
+                            if (intent.amount.isEmpty()) {
+                                submitState(viewState.value.copy(amount = intent.amount))
+                            }
+                        } else {
+                            submitState(viewState.value.copy(amount = intent.amount))
+                        }
                     }
 
-                    submitState(viewState.value.copy(amount = intent.amount))
-                    checkFields()
                 }
 
                 is InventoryIntent.DescChanged -> {
@@ -62,21 +67,23 @@ class InventoryViewModel @Inject constructor(
 
                     val result = validateAmount.execute(intent.name)
 
-                    if (!result.successful) {
-                        submitState(viewState.value.copy(amountError = result.errorMessage))
+                    checkField(result) {
+                        if (!it.successful) {
+                            submitState(viewState.value.copy(nameError = it.errorMessage))
+                        }
                     }
 
                     submitState(viewState.value.copy(name = intent.name))
-                    checkFields()
                 }
             }
         }
     }
 
-    private fun checkFields2( flow: Flow<ValidationResult>) {
+    private fun checkField(flow: Flow<ValidationResult>, onFlow: (ValidationResult) -> Unit) {
         val isValid = formValidation(flow)
         isValid.onEach {
-            submitState(viewState.value.copy(saveEnabled = it.successful))
+            onFlow(it)
+            checkFields()
         }.launchIn(viewModelScope)
     }
 
@@ -84,8 +91,7 @@ class InventoryViewModel @Inject constructor(
         val nameResult = validateName.execute(viewState.value.name)
         val amountResult = validateAmount.execute(viewState.value.amount)
 
-
-        val isValid = formValidation(nameResult, amountResult)
+       val isValid = formValidation(nameResult, amountResult)
         isValid.onEach {
             submitState(viewState.value.copy(saveEnabled = it.successful))
         }.launchIn(viewModelScope)

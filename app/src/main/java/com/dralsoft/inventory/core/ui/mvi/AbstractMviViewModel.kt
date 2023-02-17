@@ -73,16 +73,20 @@ abstract class AbstractMviViewModel<I : MviIntent, S : MviViewState, E : MviSing
             .getOrThrow()
     }
 
-    fun submitState(state: S) {
+    fun submitStateScope(state: S) {
         viewModelScope.launch {
             _viewState.value = state
         }
     }
 
+    fun submitState(state: S) {
+        _viewState.value = state
+    }
+
 
     fun formValidation(vararg fieldIsValid: Flow<ValidationResult>): Flow<ValidationResult> {
         val isValid: Flow<ValidationResult> = when {
-            fieldIsValid.isEmpty() -> flowOf(ValidationResult(false)) // ensure at least one value emitted
+            fieldIsValid.isEmpty() -> flowOf(ValidationResult(true)) // ensure at least one value emitted
             else -> combine(*fieldIsValid) { values ->
                 ValidationResult(
                     values.all { item -> item.successful },
