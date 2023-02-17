@@ -11,7 +11,7 @@ class ValidateName @Inject constructor() {
             return ValidationResult(false, "Name cannot be empty")
         }
 
-        if (name.length > 1) {
+        if (name.length < 2) {
             return ValidationResult(false, "Name must have at least 2 chars")
         }
 

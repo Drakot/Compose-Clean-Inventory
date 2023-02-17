@@ -7,7 +7,7 @@ import javax.inject.Inject
 class ValidateAmount @Inject constructor() {
 
     fun execute(amountStr: String): ValidationResult {
-        val ok = amountStr.isDigitsOnly()
+        val ok = amountStr.isDigitsOnly() && amountStr.isNotEmpty()
 
         if (!ok) {
             return ValidationResult(false, "Amount must be a number")
