@@ -22,7 +22,6 @@ data class InventoryState(
     val amount: String = "",
     val isLoading: Boolean = false
 ) : MviViewState {
-    //function named map that creates an instance of InventoryItem
     fun map() = InventoryItem(id, InventoryAttributes(name, description, amount.toIntOrNull() ?: 0))
 }
 

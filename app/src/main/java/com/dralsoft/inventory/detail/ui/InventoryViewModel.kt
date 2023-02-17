@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.dralsoft.inventory.core.ui.mvi.AbstractMviViewModel
 import com.dralsoft.inventory.detail.data.response.InventoryResponse
 import com.dralsoft.inventory.detail.domain.InventoryUseCase
+import com.dralsoft.inventory.detail.domain.SaveInventoryUseCase
+import com.dralsoft.inventory.detail.domain.ValidateAmount
 import com.dralsoft.inventory.list.data.response.InventoryAttributes
 import com.dralsoft.inventory.list.data.response.InventoryItem
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,7 +15,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class InventoryViewModel @Inject constructor(
-    private val useCase: InventoryUseCase
+    private val useCase: InventoryUseCase,
+    private val saveInventoryUseCase: SaveInventoryUseCase,
+    private val validateAmount: ValidateAmount,
 ) : AbstractMviViewModel<InventoryIntent, InventoryState, InventorySingleEvent<InventoryResponse>>() {
 
     override fun initState() = InventoryState()
@@ -23,19 +27,24 @@ class InventoryViewModel @Inject constructor(
             is InventoryIntent.Load -> {
                 load(intent.inventoryId)
             }
+
             is InventoryIntent.Save -> {
-                //TODO pending save call, usecase, etc
                 onSave()
             }
+
             is InventoryIntent.AmountChanged -> {
                 if (intent.amount.isNotEmpty() && intent.amount.isDigitsOnly()) {
                     submitState(viewState.value.copy(amount = intent.amount))
                     return
                 }
+
+
             }
+
             is InventoryIntent.DescChanged -> {
                 submitState(viewState.value.copy(description = intent.desc))
             }
+
             is InventoryIntent.NameChanged -> {
                 submitState(viewState.value.copy(name = intent.name))
             }
@@ -43,11 +52,11 @@ class InventoryViewModel @Inject constructor(
     }
 
     private fun onSave() {
-        viewState.value.let {
-            val item =
-                InventoryItem(attributes = InventoryAttributes(it.name, it.description, it.amount.toIntOrNull() ?: 0))
-
-            // submitSingleEvent(InventorySingleEvent.OnSaveSucess(InventoryResponse(it.name, it.description, it.amount)))
+        viewModelScope.launch {
+            saveInventoryUseCase.invoke(viewState.value.map())
+            viewState.value.let {
+                // submitSingleEvent(InventorySingleEvent.OnSaveSucess(InventoryResponse(it.name, it.description, it.amount)))
+            }
         }
     }
 
