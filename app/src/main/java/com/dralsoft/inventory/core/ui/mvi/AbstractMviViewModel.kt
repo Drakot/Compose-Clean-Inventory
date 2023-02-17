@@ -36,6 +36,10 @@ abstract class AbstractMviViewModel<I : MviIntent, S : MviViewState, E : MviSing
     abstract override fun submitIntent(intent: I)
     abstract fun initState(): S
 
+    init {
+        submitState(initState())
+    }
+
     protected val logTag by lazy(LazyThreadSafetyMode.PUBLICATION) {
         (rawLogTag ?: this::class.java.simpleName).let { tag: String ->
             // Tag length limit was removed in API 26.

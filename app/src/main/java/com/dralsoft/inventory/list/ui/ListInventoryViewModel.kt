@@ -43,7 +43,7 @@ class ListInventoryViewModel @Inject constructor(
         }
     }
 
-    override fun initState(): ListInventoryState = ListInventoryState()
+    override fun initState(): ListInventoryState = ListInventoryState(isLoading = true)
 
 
     private fun load() {

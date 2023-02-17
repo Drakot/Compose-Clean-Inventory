@@ -81,7 +81,7 @@ fun Form(viewModel: InventoryViewModel) {
 
     Column(modifier = Modifier.padding(16.dp)) {
 
-        Name(
+        Field(
             state.name,
             TextTypeInfo(context.getString(com.dralsoft.inventory.R.string.name), KeyboardType.Text),
             modifier.align(Alignment.CenterHorizontally)
@@ -90,7 +90,7 @@ fun Form(viewModel: InventoryViewModel) {
         }
         MySpacer(16)
 
-        Name(
+        Field(
             state.description,
             TextTypeInfo(context.getString(com.dralsoft.inventory.R.string.desc), KeyboardType.Text),
             modifier.align(Alignment.CenterHorizontally)
@@ -99,7 +99,7 @@ fun Form(viewModel: InventoryViewModel) {
         }
         MySpacer(16)
 
-        Name(
+        Field(
             state.amount.toString(),
             TextTypeInfo(context.getString(com.dralsoft.inventory.R.string.amount), KeyboardType.Number),
             modifier.align(Alignment.CenterHorizontally)
@@ -119,7 +119,7 @@ fun Form(viewModel: InventoryViewModel) {
 
 
 @Composable
-fun Name(text: String, info: TextTypeInfo, modifier: Modifier, onTextChange: (String) -> Unit) {
+fun Field(text: String, info: TextTypeInfo, modifier: Modifier, onTextChange: (String) -> Unit) {
 
     OutlinedTextField(
         value = text, onValueChange = { onTextChange(it) },
@@ -129,14 +129,7 @@ fun Name(text: String, info: TextTypeInfo, modifier: Modifier, onTextChange: (St
         },
         maxLines = 1,
         singleLine = true,
-        keyboardOptions = KeyboardOptions(keyboardType = info.type),
-        /* colors = TextFieldDefaults.textFieldColors(
-             backgroundColor = Color(0xFFFaFaFa),
-             focusedIndicatorColor = Color.Transparent,
-             unfocusedIndicatorColor = Color.Transparent,
-             cursorColor = Color.Black,
-             textColor = Color(0xFFB2B2B2)
-         )*/
+        keyboardOptions = KeyboardOptions(keyboardType = info.type)
     )
 }
 
