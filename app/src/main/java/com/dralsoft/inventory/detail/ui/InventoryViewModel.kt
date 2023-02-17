@@ -7,6 +7,7 @@ import com.dralsoft.inventory.detail.data.response.InventoryResponse
 import com.dralsoft.inventory.detail.domain.InventoryUseCase
 import com.dralsoft.inventory.detail.domain.SaveInventoryUseCase
 import com.dralsoft.inventory.detail.domain.ValidateAmount
+import com.dralsoft.inventory.detail.domain.ValidateName
 import com.dralsoft.inventory.list.data.response.InventoryAttributes
 import com.dralsoft.inventory.list.data.response.InventoryItem
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,6 +18,7 @@ import javax.inject.Inject
 class InventoryViewModel @Inject constructor(
     private val useCase: InventoryUseCase,
     private val saveInventoryUseCase: SaveInventoryUseCase,
+    private val validateName: ValidateName,
     private val validateAmount: ValidateAmount,
 ) : AbstractMviViewModel<InventoryIntent, InventoryState, InventorySingleEvent<InventoryResponse>>() {
 
@@ -33,12 +35,12 @@ class InventoryViewModel @Inject constructor(
             }
 
             is InventoryIntent.AmountChanged -> {
-                if (intent.amount.isNotEmpty() && intent.amount.isDigitsOnly()) {
+                val amountResult = validateAmount.execute(intent.amount)
+                if (!amountResult.successful) {
+                    submitState(viewState.value.copy(amountError = amountResult.errorMessage))
+                } else {
                     submitState(viewState.value.copy(amount = intent.amount))
-                    return
                 }
-
-
             }
 
             is InventoryIntent.DescChanged -> {
@@ -46,6 +48,11 @@ class InventoryViewModel @Inject constructor(
             }
 
             is InventoryIntent.NameChanged -> {
+                val result = validateAmount.execute(intent.name)
+                if (!result.successful) {
+                    submitState(viewState.value.copy(amountError = result.errorMessage))
+                }
+
                 submitState(viewState.value.copy(name = intent.name))
             }
         }
@@ -62,10 +69,10 @@ class InventoryViewModel @Inject constructor(
 
     private fun load(inventoryId: Long?) {
         viewModelScope.launch {
-            submitState(viewState.value.copy(isLoading = true))
+            submitState(viewState.value.copy(isLoading = true, saveEnabled = false))
             inventoryId?.let {
                 val response = useCase.invoke(inventoryId)
-                submitState(viewState.value.copy(isLoading = false))
+                submitState(viewState.value.copy(isLoading = false, saveEnabled = true))
                 if (response.isSuccessful) {
                     response.body()?.let {
                         submitState(

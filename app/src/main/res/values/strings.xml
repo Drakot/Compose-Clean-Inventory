@@ -6,6 +6,7 @@
     <string name="desc">Description</string>
     <string name="amount">Amount</string>
     <string name="added_inventory">Inventory item added successfully</string>
-    <string name="name_error">Name is mandatory</string>
+    <string name="name_error_length">Name must have at least 2 characters</string>
     <string name="amount_error">Amount is mandatory</string>
+    <string name="name_error_empty">Name is mandatory</string>
 </resources>

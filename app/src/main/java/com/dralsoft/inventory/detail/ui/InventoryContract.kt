@@ -18,9 +18,12 @@ data class InventoryState(
     //val inventoryItem: InventoryItem? = null,
     val id: Long = 0,
     val name: String = "",
+    val nameError: String? = null,
     val description: String = "",
     val amount: String = "",
-    val isLoading: Boolean = false
+    val amountError: String? = null,
+    val isLoading: Boolean = false,
+    val saveEnabled:Boolean= false
 ) : MviViewState {
     fun map() = InventoryItem(id, InventoryAttributes(name, description, amount.toIntOrNull() ?: 0))
 }

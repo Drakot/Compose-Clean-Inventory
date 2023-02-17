@@ -109,7 +109,7 @@ fun Form(viewModel: InventoryViewModel) {
 
         MySpacer(16)
 
-        Button(enabled = !state.isLoading, modifier = modifier.height(55.dp), onClick = {
+        Button(enabled = state.saveEnabled, modifier = modifier.height(55.dp), onClick = {
             viewModel.submitIntent(InventoryIntent.Save)
         }) {
             Text(text = context.getString(com.dralsoft.inventory.R.string.save))
