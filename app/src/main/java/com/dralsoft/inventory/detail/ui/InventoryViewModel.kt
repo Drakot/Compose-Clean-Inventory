@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.dralsoft.inventory.core.ui.mvi.AbstractMviViewModel
 import com.dralsoft.inventory.detail.data.response.InventoryResponse
 import com.dralsoft.inventory.detail.domain.InventoryUseCase
+import com.dralsoft.inventory.list.data.response.InventoryAttributes
+import com.dralsoft.inventory.list.data.response.InventoryItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -42,6 +44,8 @@ class InventoryViewModel @Inject constructor(
 
     private fun onSave() {
         viewState.value.let {
+            val item =
+                InventoryItem(attributes = InventoryAttributes(it.name, it.description, it.amount.toIntOrNull() ?: 0))
 
             // submitSingleEvent(InventorySingleEvent.OnSaveSucess(InventoryResponse(it.name, it.description, it.amount)))
         }
