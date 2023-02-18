@@ -1,23 +1,18 @@
 package com.dralsoft.inventory.detail.ui
 
-import android.util.Log
-import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.viewModelScope
 import com.dralsoft.inventory.core.domain.ValidationResult
-import com.dralsoft.inventory.core.merge
 import com.dralsoft.inventory.core.ui.mvi.AbstractMviViewModel
 import com.dralsoft.inventory.detail.data.response.InventoryResponse
 import com.dralsoft.inventory.detail.domain.InventoryUseCase
 import com.dralsoft.inventory.detail.domain.SaveInventoryUseCase
 import com.dralsoft.inventory.detail.domain.ValidateAmount
 import com.dralsoft.inventory.detail.domain.ValidateName
-import com.dralsoft.inventory.list.data.response.InventoryAttributes
-import com.dralsoft.inventory.list.data.response.InventoryItem
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -91,7 +86,7 @@ class InventoryViewModel @Inject constructor(
         val nameResult = validateName.execute(viewState.value.name)
         val amountResult = validateAmount.execute(viewState.value.amount)
 
-       val isValid = formValidation(nameResult, amountResult)
+        val isValid = formValidation(nameResult, amountResult)
         isValid.onEach {
             submitState(viewState.value.copy(saveEnabled = it.successful))
         }.launchIn(viewModelScope)
@@ -99,9 +94,12 @@ class InventoryViewModel @Inject constructor(
 
     private fun onSave() {
         viewModelScope.launch {
-            saveInventoryUseCase.invoke(viewState.value.map())
-            viewState.value.let {
-                // submitSingleEvent(InventorySingleEvent.OnSaveSucess(InventoryResponse(it.name, it.description, it.amount)))
+            val result = saveInventoryUseCase.invoke(viewState.value.map())
+
+            if (result.isSuccessful) {
+                submitSingleEvent(InventorySingleEvent.OnSaveSuccess)
+            } else {
+                submitSingleEvent(InventorySingleEvent.Error(result.message()))
             }
         }
     }
@@ -114,12 +112,14 @@ class InventoryViewModel @Inject constructor(
                 submitState(viewState.value.copy(isLoading = false, saveEnabled = true))
                 if (response.isSuccessful) {
                     response.body()?.let {
+                        val attributes = it.data.attributes
                         submitState(
                             viewState.value.copy(
                                 it.data.id,
-                                it.data.attributes.name,
-                                it.data.attributes.description,
-                                it.data.attributes.amount.toString()
+                                attributes.name,
+                                attributes.description,
+                                attributes.amount.toString(),
+                                attributes.pictures
                             )
                         )
                     }

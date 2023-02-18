@@ -20,17 +20,19 @@ data class InventoryState(
     val name: String = "",
     val description: String = "",
     val amount: String = "",
+    val pictures: List<String> = listOf(),
     val amountError: String? = null,
     val nameError: String? = null,
     val isLoading: Boolean = false,
-    val saveEnabled: Boolean = false
-) : MviViewState {
+    val saveEnabled: Boolean = false,
+
+    ) : MviViewState {
     fun map() = InventoryItem(id, InventoryAttributes(name, description, amount.toIntOrNull() ?: 0))
 }
 
 sealed class InventorySingleEvent<out T : Any> : MviSingleEvent {
     data class Error(val errorMessage: String) : InventorySingleEvent<Nothing>()
     data class OnLoadSuccess<T : Any>(val data: T) : InventorySingleEvent<T>()
-    data class OnSaveSuccess<T : Any>(val data: T) : InventorySingleEvent<T>()
+    object OnSaveSuccess : InventorySingleEvent<Nothing>()
 }
 

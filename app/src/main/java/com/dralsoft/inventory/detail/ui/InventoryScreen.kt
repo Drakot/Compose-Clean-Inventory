@@ -81,6 +81,8 @@ fun Form(viewModel: InventoryViewModel) {
 
     Column(modifier = Modifier.padding(16.dp)) {
 
+        PictureGridView(pictures = state.pictures)
+
         Field(
             state.name,
             TextTypeInfo(context.getString(com.dralsoft.inventory.R.string.name), KeyboardType.Text),
