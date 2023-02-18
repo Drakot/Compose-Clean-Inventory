@@ -86,7 +86,7 @@ fun Form(viewModel: InventoryViewModel) {
         Field(
             state.name,
             TextTypeInfo(context.getString(com.dralsoft.inventory.R.string.name), KeyboardType.Text),
-            modifier.align(Alignment.CenterHorizontally)
+            modifier.align(Alignment.CenterHorizontally).padding(top = 16.dp)
         ) {
             viewModel.submitIntent(InventoryIntent.NameChanged(it))
         }
