@@ -1,5 +1,6 @@
 package com.dralsoft.inventory.detail.ui
 
+import android.net.Uri
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -16,22 +17,18 @@ import androidx.compose.material.icons.filled.RemoveCircle
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 
 
 @Composable
 fun PictureGridView(
-    pictures: List<String> = arrayListOf(),
-    onItemSelected: (String) -> Unit,
-    onRemovePicture: (String) -> Unit
+    pictures: List<Uri> = arrayListOf(),
+    onItemSelected: (Uri) -> Unit,
+    onRemovePicture: (Uri) -> Unit
 ) {
-    val context = LocalContext.current
-//  //TODO mostrar para seleccionar galeria o camara en bottomsheet
     LazyVerticalGrid(columns = GridCells.Adaptive(100.dp), content = {
         item {
             AddPictureItem(onItemSelected)
@@ -44,18 +41,18 @@ fun PictureGridView(
 }
 
 @Composable
-fun AddPictureItem(onItemSelected: (String) -> Unit) {
-    Card(border = BorderStroke(1.dp, Color.LightGray), modifier = Modifier
+fun AddPictureItem(onItemSelected: (Uri) -> Unit) {
+    Card(border = BorderStroke(1.dp, Color.LightGray), shape = RoundedCornerShape(20.dp), modifier = Modifier
         .width(100.dp)
-        .height(100.dp)
-        .padding(end = 8.dp)
+        .height(116.dp)
+        .padding(end = 8.dp, top = 8.dp)
         .clickable {
-            onItemSelected("")
+            onItemSelected(Uri.EMPTY)
         }) {
         Box(modifier = Modifier.padding(0.dp)) {
             Icon(
                 imageVector = Icons.Filled.AddAPhoto,
-                tint =MaterialTheme.colors.primaryVariant,
+                tint = MaterialTheme.colors.primaryVariant,
                 contentDescription = "",
                 modifier = Modifier
                     .align(Alignment.Center),
@@ -66,21 +63,20 @@ fun AddPictureItem(onItemSelected: (String) -> Unit) {
 
 @Composable
 fun ItemPicture(
-    picture: String, onItemSelected: (String) -> Unit, onRemovePicture: (String) -> Unit
+    picture: Uri, onItemSelected: (Uri) -> Unit, onRemovePicture: (Uri) -> Unit
 ) {
-    Card(border = BorderStroke(1.dp, Color.LightGray), modifier = Modifier
+    Card(border = BorderStroke(1.dp, Color.LightGray), shape = RoundedCornerShape(20.dp), modifier = Modifier
         .width(100.dp)
-        .height(100.dp)
-        .padding(end = 8.dp)
+        .height(116.dp)
+        .padding(end = 8.dp, top = 8.dp)
         .clickable {
             onItemSelected(picture)
         }) {
         Box(modifier = Modifier.padding(0.dp)) {
             AsyncImage(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(8.dp)
-                    .clip(RoundedCornerShape(16.dp)),
+                    .fillMaxSize(),
+                //.clip(RoundedCornerShape(16.dp)),
                 contentScale = ContentScale.Crop,
 
                 model = picture,
@@ -90,7 +86,7 @@ fun ItemPicture(
             Icon(
                 imageVector = Icons.Filled.RemoveCircle,
                 contentDescription = "",
-                tint =MaterialTheme.colors.primaryVariant,
+                tint = MaterialTheme.colors.primaryVariant,
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(4.dp)
@@ -98,7 +94,7 @@ fun ItemPicture(
                         onRemovePicture(picture)
                     },
 
-            )
+                )
         }
     }
 }

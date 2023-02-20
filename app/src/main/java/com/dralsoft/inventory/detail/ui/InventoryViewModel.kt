@@ -1,5 +1,6 @@
 package com.dralsoft.inventory.detail.ui
 
+import android.net.Uri
 import androidx.lifecycle.viewModelScope
 import com.dralsoft.inventory.core.domain.ValidationResult
 import com.dralsoft.inventory.core.ui.mvi.AbstractMviViewModel
@@ -29,7 +30,9 @@ class InventoryViewModel @Inject constructor(
         viewModelScope.launch {
             when (intent) {
                 is InventoryIntent.Load -> {
-                    load(intent.inventoryId)
+                    if (viewState.value.name.isEmpty()) {
+                        load(intent.inventoryId)
+                    }
                 }
 
                 is InventoryIntent.Save -> {
@@ -68,6 +71,11 @@ class InventoryViewModel @Inject constructor(
                     }
 
                     submitState(viewState.value.copy(name = intent.name))
+                }
+                is InventoryIntent.ImageAdded -> {
+                    val pictures = viewState.value.pictures.toMutableList()
+                    intent.uri?.let { pictures.add(0, it) }
+                    submitState(viewState.value.copy(pictures = pictures))
                 }
             }
         }
@@ -122,7 +130,9 @@ class InventoryViewModel @Inject constructor(
                                 attributes.name,
                                 attributes.description,
                                 attributes.amount.toString(),
-                                attributes.pictures
+                                attributes.pictures.map { picture ->
+                                    Uri.parse(picture)
+                                }
                             )
                         )
                     }

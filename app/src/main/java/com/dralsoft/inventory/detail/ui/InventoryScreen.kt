@@ -1,14 +1,12 @@
 package com.dralsoft.inventory.detail.ui
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Button
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
-import androidx.compose.material.rememberScaffoldState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -23,6 +21,7 @@ import com.dralsoft.inventory.core.ViewConfig
 import com.dralsoft.inventory.core.navigation.InventoryItemInput
 import com.dralsoft.inventory.core.ui.MySpacer
 import com.dralsoft.inventory.core.ui.mvi.collectInLaunchedEffectWithLifecycle
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -69,21 +68,40 @@ fun InventoryScreen(
         ScaffoldView(ViewConfig(showBackButton = true), onClickNavIcon = {
             navController.popBackStack()
         }) {
-            Form(viewModel)
+            Form(viewModel, scope)
         }
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun Form(viewModel: InventoryViewModel) {
+fun Form(viewModel: InventoryViewModel, scope: CoroutineScope) {
     val state = viewModel.viewState.collectAsState().value
     val context = LocalContext.current
     val modifier = Modifier.fillMaxWidth()
 
+    val modalSheetState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        confirmStateChange = { it != ModalBottomSheetValue.HalfExpanded },
+        skipHalfExpanded = true
+    )
+
+    val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) { uri ->
+        viewModel.submitIntent(InventoryIntent.ImageAdded(uri))
+    }
+
     Column(modifier = Modifier.padding(16.dp)) {
-
         PictureGridView(pictures = state.pictures, {
-
+            scope.launch {
+                if (it.scheme == null) {
+                    if (modalSheetState.isVisible)
+                        modalSheetState.hide()
+                    else
+                        modalSheetState.animateTo(ModalBottomSheetValue.Expanded)
+                }
+            }
         }, {
 
         })
@@ -125,6 +143,30 @@ fun Form(viewModel: InventoryViewModel) {
         }
     }
 
+    BottomSheetLayout(modalSheetState) {
+        Column {
+            Button(
+                onClick = {
+                    scope.launch {
+                        modalSheetState.hide()
+
+                    }
+                    singlePhotoPickerLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+
+                }
+            ) {
+                Text(text = "Gallery")
+            }
+
+            Button(
+                onClick = {
+                    scope.launch { modalSheetState.hide() }
+                }
+            ) {
+                Text(text = "Camera")
+            }
+        }
+    }
     Loading(state.isLoading)
 }
 

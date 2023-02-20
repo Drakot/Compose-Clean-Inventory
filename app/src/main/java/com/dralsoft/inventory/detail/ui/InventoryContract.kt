@@ -1,5 +1,6 @@
 package com.dralsoft.inventory.detail.ui
 
+import android.net.Uri
 import com.dralsoft.inventory.core.ui.mvi.MviIntent
 import com.dralsoft.inventory.core.ui.mvi.MviSingleEvent
 import com.dralsoft.inventory.core.ui.mvi.MviViewState
@@ -11,6 +12,8 @@ sealed class InventoryIntent : MviIntent {
     data class NameChanged(val name: String) : InventoryIntent()
     data class DescChanged(val desc: String) : InventoryIntent()
     data class AmountChanged(val amount: String) : InventoryIntent()
+    data class ImageAdded(val uri: Uri?) : InventoryIntent()
+
     object Save : InventoryIntent()
 }
 
@@ -20,7 +23,7 @@ data class InventoryState(
     val name: String = "",
     val description: String = "",
     val amount: String = "",
-    val pictures: List<String> = listOf(),
+    val pictures: List<Uri> = listOf(),
     val amountError: String? = null,
     val nameError: String? = null,
     var isLoading: Boolean = false,
