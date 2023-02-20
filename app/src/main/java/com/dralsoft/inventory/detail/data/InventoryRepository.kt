@@ -16,7 +16,7 @@ class InventoryRepository @Inject constructor(
         return mock.getInventory(id)
     }
 
-    fun saveInventory(item: InventoryItem): Response<InventoryResponse> {
+    suspend fun saveInventory(item: InventoryItem): Response<InventoryResponse> {
         return mock.saveInventory(item)
     }
 }

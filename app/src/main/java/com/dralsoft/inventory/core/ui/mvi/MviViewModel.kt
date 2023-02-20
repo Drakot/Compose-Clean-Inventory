@@ -1,5 +1,6 @@
 package com.dralsoft.inventory.core.ui.mvi
 
+import com.dralsoft.inventory.detail.ui.LoadingState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -13,6 +14,7 @@ import kotlinx.coroutines.flow.StateFlow
  */
 interface MviViewModel<I : MviIntent, S : MviViewState, E : MviSingleEvent> {
     val viewState: StateFlow<S>
+    val viewLoadingState: StateFlow<LoadingState>
     val singleEvent: Flow<E>
     fun submitIntent(intent: I)
 }

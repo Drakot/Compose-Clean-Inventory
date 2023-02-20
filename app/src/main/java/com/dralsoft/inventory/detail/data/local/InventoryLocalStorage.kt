@@ -31,7 +31,8 @@ class InventoryLocalStorage {
         )
     }
 
-    fun saveInventory(item: InventoryItem): Response<InventoryResponse> {
+    suspend fun saveInventory(item: InventoryItem): Response<InventoryResponse> {
+        delay(500)
         return Response.success(
             InventoryResponse(
                 item

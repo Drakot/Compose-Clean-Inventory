@@ -1,9 +1,6 @@
 package com.dralsoft.inventory.core.ui
 
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
@@ -11,7 +8,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import com.dralsoft.inventory.R
 import com.dralsoft.inventory.core.ViewConfig
-import com.dralsoft.inventory.ui.theme.Purple700
 
 @Composable
 fun MyTopAppBar(viewConfig: ViewConfig = ViewConfig(), onClick: (String) -> Unit, onClickNavIcon: () -> Unit) {
@@ -20,7 +16,7 @@ fun MyTopAppBar(viewConfig: ViewConfig = ViewConfig(), onClick: (String) -> Unit
             Text(text = LocalContext.current.getString(R.string.app_name))
 
         },
-        backgroundColor = Purple700, contentColor = Color.White,
+        backgroundColor = MaterialTheme.colors.primaryVariant, contentColor = Color.White,
         navigationIcon =
         if (viewConfig.showBackButton) {
             {

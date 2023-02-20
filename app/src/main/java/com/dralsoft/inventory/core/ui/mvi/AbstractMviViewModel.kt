@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dralsoft.inventory.BuildConfig
 import com.dralsoft.inventory.core.domain.ValidationResult
+import com.dralsoft.inventory.detail.ui.LoadingState
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.onFailure
 import kotlinx.coroutines.channels.onSuccess
@@ -31,11 +32,16 @@ abstract class AbstractMviViewModel<I : MviIntent, S : MviViewState, E : MviSing
     }
     override val viewState: StateFlow<S> = _viewState
 
+    private val _viewLoadingState: MutableStateFlow<LoadingState> by lazy {
+        MutableStateFlow(LoadingState(false))
+    }
+    override val viewLoadingState: StateFlow<LoadingState> = _viewLoadingState
+
     abstract override fun submitIntent(intent: I)
     abstract fun initState(): S
 
     init {
-        submitState(initState())
+        //   submitState(initState())
     }
 
     protected val logTag by lazy(LazyThreadSafetyMode.PUBLICATION) {
@@ -83,6 +89,13 @@ abstract class AbstractMviViewModel<I : MviIntent, S : MviViewState, E : MviSing
         _viewState.value = state
     }
 
+    fun submitLoadingState(state: LoadingState) {
+        _viewLoadingState.value = state
+    }
+
+    fun showLoading(state: Boolean) {
+        submitLoadingState(LoadingState(state))
+    }
 
     fun formValidation(vararg fieldIsValid: Flow<ValidationResult>): Flow<ValidationResult> {
         val isValid: Flow<ValidationResult> = when {

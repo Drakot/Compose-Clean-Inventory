@@ -9,9 +9,12 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddAPhoto
 import androidx.compose.material.icons.filled.RemoveCircle
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -20,43 +23,82 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 
-@Composable
-fun PictureGridView(pictures: List<String>) {
-    val context = LocalContext.current
 
+@Composable
+fun PictureGridView(
+    pictures: List<String> = arrayListOf(),
+    onItemSelected: (String) -> Unit,
+    onRemovePicture: (String) -> Unit
+) {
+    val context = LocalContext.current
+//  //TODO mostrar para seleccionar galeria o camara en bottomsheet
     LazyVerticalGrid(columns = GridCells.Adaptive(100.dp), content = {
-        items(items = pictures) { hero ->
-            ItemPicture(hero) {
-                //TODO mostrar para seleccionar galeria o camara en bottomsheet
-            }
+        item {
+            AddPictureItem(onItemSelected)
         }
+        items(items = pictures) { hero ->
+            ItemPicture(hero, onItemSelected, onRemovePicture)
+        }
+
     }, contentPadding = PaddingValues(end = 8.dp))
 }
 
 @Composable
+fun AddPictureItem(onItemSelected: (String) -> Unit) {
+    Card(border = BorderStroke(1.dp, Color.LightGray), modifier = Modifier
+        .width(100.dp)
+        .height(100.dp)
+        .padding(end = 8.dp)
+        .clickable {
+            onItemSelected("")
+        }) {
+        Box(modifier = Modifier.padding(0.dp)) {
+            Icon(
+                imageVector = Icons.Filled.AddAPhoto,
+                tint =MaterialTheme.colors.primaryVariant,
+                contentDescription = "",
+                modifier = Modifier
+                    .align(Alignment.Center),
+            )
+        }
+    }
+}
+
+@Composable
 fun ItemPicture(
-    picture: String, modifier: Modifier = Modifier
-        .width(200.dp), onItemSelected: (String) -> Unit
+    picture: String, onItemSelected: (String) -> Unit, onRemovePicture: (String) -> Unit
 ) {
-    Card(border = BorderStroke(1.dp, Color.LightGray), modifier = modifier
+    Card(border = BorderStroke(1.dp, Color.LightGray), modifier = Modifier
+        .width(100.dp)
+        .height(100.dp)
         .padding(end = 8.dp)
         .clickable {
             onItemSelected(picture)
         }) {
-        Column(modifier = Modifier.padding(0.dp)) {
+        Box(modifier = Modifier.padding(0.dp)) {
             AsyncImage(
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxSize()
                     .padding(8.dp)
-                    .width(100.dp)
-                    .height(100.dp)
                     .clip(RoundedCornerShape(16.dp)),
                 contentScale = ContentScale.Crop,
+
                 model = picture,
                 contentDescription = "Translated description of what the image contains"
             )
-//TODO poner arriba derecha con Box o COnstraint, Añadir click para eliminar
-            Icon(imageVector = Icons.Filled.RemoveCircle, contentDescription = "")
+
+            Icon(
+                imageVector = Icons.Filled.RemoveCircle,
+                contentDescription = "",
+                tint =MaterialTheme.colors.primaryVariant,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(4.dp)
+                    .clickable {
+                        onRemovePicture(picture)
+                    },
+
+            )
         }
     }
 }

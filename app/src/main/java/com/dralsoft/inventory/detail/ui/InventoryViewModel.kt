@@ -37,7 +37,6 @@ class InventoryViewModel @Inject constructor(
                 }
 
                 is InventoryIntent.AmountChanged -> {
-
                     val amountResult = validateAmount.execute(intent.amount)
 
                     checkField(amountResult) {
@@ -94,8 +93,10 @@ class InventoryViewModel @Inject constructor(
 
     private fun onSave() {
         viewModelScope.launch {
-            val result = saveInventoryUseCase.invoke(viewState.value.map())
+            submitState(viewState.value.copy(isLoading = true, saveEnabled = false))
 
+            val result = saveInventoryUseCase.invoke(viewState.value.map())
+            submitState(viewState.value.copy(isLoading = false, saveEnabled = true))
             if (result.isSuccessful) {
                 submitSingleEvent(InventorySingleEvent.OnSaveSuccess)
             } else {
@@ -106,10 +107,12 @@ class InventoryViewModel @Inject constructor(
 
     private fun load(inventoryId: Long?) {
         viewModelScope.launch {
-            submitState(viewState.value.copy(isLoading = true, saveEnabled = false))
+
+            submitState(viewState.value.copy(saveEnabled = false, isLoading = true))
+
             inventoryId?.let {
                 val response = useCase.invoke(inventoryId)
-                submitState(viewState.value.copy(isLoading = false, saveEnabled = true))
+
                 if (response.isSuccessful) {
                     response.body()?.let {
                         val attributes = it.data.attributes
@@ -127,6 +130,8 @@ class InventoryViewModel @Inject constructor(
                     submitSingleEvent(InventorySingleEvent.Error(response.message()))
                 }
             }
+
+            submitState(viewState.value.copy(saveEnabled = inventoryId != null, isLoading = false))
         }
     }
 

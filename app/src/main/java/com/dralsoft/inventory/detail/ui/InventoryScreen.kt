@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.dralsoft.inventory.R
+import com.dralsoft.inventory.core.Loading
 import com.dralsoft.inventory.core.ScaffoldView
 import com.dralsoft.inventory.core.ViewConfig
 import com.dralsoft.inventory.core.navigation.InventoryItemInput
@@ -81,12 +82,18 @@ fun Form(viewModel: InventoryViewModel) {
 
     Column(modifier = Modifier.padding(16.dp)) {
 
-        PictureGridView(pictures = state.pictures)
+        PictureGridView(pictures = state.pictures, {
+
+        }, {
+
+        })
 
         Field(
             state.name,
             TextTypeInfo(context.getString(com.dralsoft.inventory.R.string.name), KeyboardType.Text),
-            modifier.align(Alignment.CenterHorizontally).padding(top = 16.dp)
+            modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(top = 16.dp)
         ) {
             viewModel.submitIntent(InventoryIntent.NameChanged(it))
         }
@@ -117,6 +124,8 @@ fun Form(viewModel: InventoryViewModel) {
             Text(text = context.getString(com.dralsoft.inventory.R.string.save))
         }
     }
+
+    Loading(state.isLoading)
 }
 
 
