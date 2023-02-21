@@ -2,6 +2,7 @@ package com.dralsoft.inventory.detail.ui
 
 import android.net.Uri
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -13,10 +14,11 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddAPhoto
-import androidx.compose.material.icons.filled.RemoveCircle
+import androidx.compose.material.icons.outlined.RemoveCircleOutline
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
@@ -42,14 +44,19 @@ fun PictureGridView(
 
 @Composable
 fun AddPictureItem(onItemSelected: (Uri) -> Unit) {
-    Card(border = BorderStroke(1.dp, Color.LightGray), shape = RoundedCornerShape(20.dp), modifier = Modifier
-        .width(100.dp)
-        .height(116.dp)
-        .padding(end = 8.dp, top = 8.dp)
-        .clickable {
-            onItemSelected(Uri.EMPTY)
-        }) {
-        Box(modifier = Modifier.padding(0.dp)) {
+    Card(
+        border = BorderStroke(1.dp, Color.LightGray),
+        shape = RoundedCornerShape(20.dp), modifier = Modifier
+            .width(100.dp)
+            .height(116.dp)
+            .padding(end = 8.dp, top = 8.dp)
+
+    ) {
+        Box(modifier = Modifier
+            .padding(0.dp)
+            .clickable {
+                onItemSelected(Uri.EMPTY)
+            }) {
             Icon(
                 imageVector = Icons.Filled.AddAPhoto,
                 tint = MaterialTheme.colors.primaryVariant,
@@ -65,31 +72,42 @@ fun AddPictureItem(onItemSelected: (Uri) -> Unit) {
 fun ItemPicture(
     picture: Uri, onItemSelected: (Uri) -> Unit, onRemovePicture: (Uri) -> Unit
 ) {
-    Card(border = BorderStroke(1.dp, Color.LightGray), shape = RoundedCornerShape(20.dp), modifier = Modifier
-        .width(100.dp)
-        .height(116.dp)
-        .padding(end = 8.dp, top = 8.dp)
-        .clickable {
-            onItemSelected(picture)
-        }) {
-        Box(modifier = Modifier.padding(0.dp)) {
+    Card(
+        border = BorderStroke(1.dp, Color.LightGray), shape = RoundedCornerShape(20.dp), modifier = Modifier
+            .width(100.dp)
+            .height(116.dp)
+            .padding(end = 8.dp, top = 8.dp)
+    ) {
+        Box(modifier = Modifier
+            .padding(0.dp)
+            .clickable {
+                onItemSelected(picture)
+            }) {
             AsyncImage(
                 modifier = Modifier
                     .fillMaxSize(),
-                //.clip(RoundedCornerShape(16.dp)),
                 contentScale = ContentScale.Crop,
 
                 model = picture,
                 contentDescription = "Translated description of what the image contains"
             )
 
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White.copy(alpha = 0.3f))
+            ) {
+
+            }
+
             Icon(
-                imageVector = Icons.Filled.RemoveCircle,
+                imageVector = Icons.Outlined.RemoveCircleOutline,
                 contentDescription = "",
                 tint = MaterialTheme.colors.primaryVariant,
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(4.dp)
+                    .clip(RoundedCornerShape(50))
                     .clickable {
                         onRemovePicture(picture)
                     },

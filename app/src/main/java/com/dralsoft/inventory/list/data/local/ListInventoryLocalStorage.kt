@@ -6,7 +6,7 @@ import retrofit2.Response
 
 class ListInventoryLocalStorage {
     suspend fun listInventory(): Response<ListInventoryResponse> {
-        delay(1000)
+        delay(500)
         return Response.success(
             ListInventoryResponse(
                 listOf(

@@ -6,6 +6,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Image
+import androidx.compose.material.icons.rounded.PhotoCamera
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -127,7 +130,7 @@ fun Form(viewModel: InventoryViewModel, scope: CoroutineScope) {
         MySpacer(16)
 
         Field(
-            state.amount.toString(),
+            state.amount,
             TextTypeInfo(context.getString(com.dralsoft.inventory.R.string.amount), KeyboardType.Number),
             modifier.align(Alignment.CenterHorizontally)
         ) {
@@ -144,26 +147,17 @@ fun Form(viewModel: InventoryViewModel, scope: CoroutineScope) {
     }
 
     BottomSheetLayout(modalSheetState) {
-        Column {
-            Button(
-                onClick = {
-                    scope.launch {
-                        modalSheetState.hide()
+        Column(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
 
-                    }
-                    singlePhotoPickerLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-
+            BottomSheetItems("Gallery", Icons.Rounded.Image){
+                scope.launch {
+                    modalSheetState.hide()
                 }
-            ) {
-                Text(text = "Gallery")
+                singlePhotoPickerLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+
             }
+            BottomSheetItems("Camera", Icons.Rounded.PhotoCamera, com.dralsoft.inventory.ui.theme.Green){
 
-            Button(
-                onClick = {
-                    scope.launch { modalSheetState.hide() }
-                }
-            ) {
-                Text(text = "Camera")
             }
         }
     }
