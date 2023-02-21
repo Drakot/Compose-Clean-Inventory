@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "946348296182",
+    "project_id": "inventory-b265f",
+    "storage_bucket": "inventory-b265f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:946348296182:android:b10e9071105d0edd18a9d7",
+        "android_client_info": {
+          "package_name": "com.dralsoft.inventory"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "946348296182-5bd7vsb351nhlkqqntrblcn99ef1ogr2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1dxepntWuitTGKvBsW1ifiQhfNC58iho"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "946348296182-5bd7vsb351nhlkqqntrblcn99ef1ogr2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
