@@ -95,7 +95,7 @@ fun ItemPicture(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.White.copy(alpha = 0.3f))
+                    .background(Color.White.copy(alpha = 0.35f))
             ) {
 
             }

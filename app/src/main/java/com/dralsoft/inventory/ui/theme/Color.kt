@@ -2,8 +2,9 @@ package com.dralsoft.inventory.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple200 = Color(0xFFBB86FC)
-val Purple500 = Color(0xFF6200EE)
-val Purple700 = Color(0xFF3700B3)
-val Teal200 = Color(0xFF03DAC5)
-val Green = Color(0xFF49E06F)
+val Green = Color(0xFF59981A)
+
+val MidnightBlue = Color(0xFF145DA0)
+val DarkBlue = Color(0xFF0C2D48)
+val Blue = Color(0xFF189AB4)
+val BabyBlue = Color(0xFFB1D4E0)
