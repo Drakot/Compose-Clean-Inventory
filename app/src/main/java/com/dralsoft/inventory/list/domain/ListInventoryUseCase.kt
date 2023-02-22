@@ -6,7 +6,7 @@ import retrofit2.Response
 import javax.inject.Inject
 
 class ListInventoryUseCase @Inject constructor(private val repository: ListInventoryRepository) {
-    suspend operator fun invoke(): Response<ListInventoryResponse> {
-        return repository.listInventory()
+    suspend operator fun invoke(text:String): Response<ListInventoryResponse> {
+        return repository.listInventory(text)
     }
 }

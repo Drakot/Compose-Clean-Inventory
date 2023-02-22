@@ -1,8 +1,5 @@
 package com.dralsoft.inventory.list.ui
 
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
 import com.dralsoft.inventory.core.navigation.InventoryItemInput
 import com.dralsoft.inventory.core.navigation.NavRoutes
@@ -17,16 +14,6 @@ import javax.inject.Inject
 class ListInventoryViewModel @Inject constructor(
     private val useCase: ListInventoryUseCase
 ) : AbstractMviViewModel<ListIntent, ListInventoryState, ListUiSingleEvent>() {
-
-    private val _searchTextState: MutableState<String> =
-        mutableStateOf(value = "")
-    val searchTextState: State<String> = _searchTextState
-
-
-
-    fun updateSearchTextState(newValue: String) {
-        _searchTextState.value = newValue
-    }
 
 
     init {
@@ -57,13 +44,18 @@ class ListInventoryViewModel @Inject constructor(
             }
 
             is ListIntent.OnCloseSearchClick -> {
-                submitState(viewState.value.copy(searchWidgetState = SearchWidgetState.CLOSED))
+                submitState(viewState.value.copy(searchState = SearchWidgetState.CLOSED))
             }
             is ListIntent.OnSearch -> {
                 //Call service to search
+                load(intent.text)
             }
             is ListIntent.OnSearchClicked -> {
-                submitState(viewState.value.copy(searchWidgetState = SearchWidgetState.OPENED))
+                submitState(viewState.value.copy(searchState = SearchWidgetState.OPENED))
+            }
+            is ListIntent.OnTypeSearch -> {
+                submitState(viewState.value.copy(searchText = intent.text))
+                //Call service to search if needed
             }
         }
     }
@@ -71,9 +63,9 @@ class ListInventoryViewModel @Inject constructor(
     override fun initState(): ListInventoryState = ListInventoryState(isLoading = true)
 
 
-    private fun load() {
+    private fun load(text: String = "") {
         viewModelScope.launch {
-            val response = useCase.invoke()
+            val response = useCase.invoke(text)
             submitState(viewState.value.copy(isLoading = false))
             if (response.isSuccessful) {
                 response.body()?.let {

@@ -11,7 +11,7 @@ class ListInventoryRepository @Inject constructor(
     private val mock: ListInventoryLocalStorage
 ) {
 
-    suspend fun listInventory(): Response<ListInventoryResponse> {
-        return mock.listInventory()
+    suspend fun listInventory(text:String): Response<ListInventoryResponse> {
+        return mock.listInventory(text)
     }
 }

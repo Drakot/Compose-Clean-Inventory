@@ -10,7 +10,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,18 +31,16 @@ fun ListInventoryScreen(navController: NavController, viewModel: ListInventoryVi
     val state = viewModel.viewState.collectAsState().value
 
 
-    val searchTextState by viewModel.searchTextState
-
     Box(modifier = Modifier.fillMaxSize()) {
         ScaffoldView(ViewConfig(showFAB = true, onSearchClicked = {
             viewModel.submitIntent(ListIntent.OnSearchClicked)
         }), onFABClick = {
             viewModel.submitIntent(ListIntent.AddInventory)
         },
-            searchWidgetState = state.searchWidgetState,
-            searchTextState = searchTextState,
+            searchWidgetState = state.searchState,
+            searchTextState = state.searchText,
             onTextChange = {
-                viewModel.updateSearchTextState(newValue = it)
+                viewModel.submitIntent(ListIntent.OnTypeSearch(it))
             },
             onCloseClicked = {
                 viewModel.submitIntent(ListIntent.OnCloseSearchClick)

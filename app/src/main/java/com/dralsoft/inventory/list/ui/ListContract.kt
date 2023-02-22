@@ -12,13 +12,15 @@ sealed class ListIntent : MviIntent {
     object AddInventory : ListIntent()
     object OnSearchClicked : ListIntent()
     object OnCloseSearchClick : ListIntent()
-    data class OnSearch(val text:String) : ListIntent()
+    data class OnSearch(val text: String) : ListIntent()
+    data class OnTypeSearch(val text: String) : ListIntent()
 }
 
 data class ListInventoryState(
     val data: List<InventoryItem> = listOf(),
     val isLoading: Boolean = false,
-    val searchWidgetState: SearchWidgetState = SearchWidgetState.CLOSED,
+    val searchState: SearchWidgetState = SearchWidgetState.CLOSED,
+    val searchText: String = ""
 ) : MviViewState
 
 sealed class ListUiSingleEvent : MviSingleEvent {
