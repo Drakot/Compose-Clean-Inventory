@@ -14,7 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.dralsoft.inventory.core.ui.MyFab
 import com.dralsoft.inventory.core.ui.MyTopAppBar
-import kotlinx.coroutines.launch
+import com.dralsoft.inventory.core.ui.SearchWidgetState
 
 @Composable
 fun ErrorView(errorMessage: String) {
@@ -46,26 +46,40 @@ fun Loading(isLoading: Boolean) {
     }
 }
 
-data class ViewConfig(val showFAB: Boolean = false, val showBackButton: Boolean = false)
+data class ViewConfig(
+    val showFAB: Boolean = false,
+    val showBackButton: Boolean = false,
+    val onClick: (String) -> Unit = {},
+    val onClickNavIcon: () -> Unit = {},
+    val onSearchClicked: (() -> Unit)?  = null,
+)
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ScaffoldView(
     viewConfig: ViewConfig = ViewConfig(),
-    onClickNavIcon: () -> Unit = {},
     onFABClick: () -> Unit = {},
-    Content: @Composable () -> Unit,
-    ) {
+    searchWidgetState: SearchWidgetState = SearchWidgetState.CLOSED,
+    searchTextState: String = "",
+    onTextChange: (String) -> Unit = {},
+    onCloseClicked: () -> Unit = {},
+    onSearch: (String) -> Unit = {},
+    Content: @Composable () -> Unit
+) {
     val state = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
 
+
     Scaffold(
         topBar = {
-            MyTopAppBar(viewConfig, onClick = {
-                coroutineScope.launch {
-                    state.snackbarHostState.showSnackbar(it)
-                }
-            }, onClickNavIcon = onClickNavIcon)
+            MyTopAppBar(
+                viewConfig,
+                searchWidgetState = searchWidgetState,
+                searchTextState = searchTextState,
+                onTextChange = onTextChange,
+                onCloseClicked = onCloseClicked,
+                onSearch = onSearch,
+            )
         }, scaffoldState = state,
 
         floatingActionButton = {

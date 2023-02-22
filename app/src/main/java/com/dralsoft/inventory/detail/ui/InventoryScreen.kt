@@ -68,9 +68,9 @@ fun InventoryScreen(
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        ScaffoldView(ViewConfig(showBackButton = true), onClickNavIcon = {
+        ScaffoldView(ViewConfig(showBackButton = true).copy(onClickNavIcon = {
             navController.popBackStack()
-        }) {
+        })) {
             Form(viewModel, scope)
         }
     }
@@ -147,16 +147,20 @@ fun Form(viewModel: InventoryViewModel, scope: CoroutineScope) {
     }
 
     BottomSheetLayout(modalSheetState) {
-        Column(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        ) {
 
-            BottomSheetItems("Gallery", Icons.Rounded.Image){
+            BottomSheetItems("Gallery", Icons.Rounded.Image) {
                 scope.launch {
                     modalSheetState.hide()
                 }
                 singlePhotoPickerLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
 
             }
-            BottomSheetItems("Camera", Icons.Rounded.PhotoCamera, com.dralsoft.inventory.ui.theme.Green){
+            BottomSheetItems("Camera", Icons.Rounded.PhotoCamera, com.dralsoft.inventory.ui.theme.Green) {
 
             }
         }
@@ -171,9 +175,7 @@ fun Field(text: String, info: TextTypeInfo, modifier: Modifier, onTextChange: (S
     OutlinedTextField(
         value = text, onValueChange = { onTextChange(it) },
         modifier = modifier,
-        placeholder = {
-            Text(text = info.text)
-        },
+        label = { Text(info.text) },
         maxLines = 1,
         singleLine = true,
         keyboardOptions = KeyboardOptions(keyboardType = info.type)

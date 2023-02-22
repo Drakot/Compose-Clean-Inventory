@@ -10,6 +10,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,15 +25,32 @@ import com.dralsoft.inventory.core.ScaffoldView
 import com.dralsoft.inventory.core.ViewConfig
 import com.dralsoft.inventory.core.ui.mvi.collectInLaunchedEffectWithLifecycle
 import com.dralsoft.inventory.list.data.response.InventoryItem
+import timber.log.Timber
 
 @Composable
 fun ListInventoryScreen(navController: NavController, viewModel: ListInventoryViewModel = hiltViewModel()) {
     val state = viewModel.viewState.collectAsState().value
 
+
+    val searchTextState by viewModel.searchTextState
+
     Box(modifier = Modifier.fillMaxSize()) {
-        ScaffoldView(ViewConfig(showFAB = true), onFABClick = {
+        ScaffoldView(ViewConfig(showFAB = true, onSearchClicked = {
+            viewModel.submitIntent(ListIntent.OnSearchClicked)
+        }), onFABClick = {
             viewModel.submitIntent(ListIntent.AddInventory)
-        }) {
+        },
+            searchWidgetState = state.searchWidgetState,
+            searchTextState = searchTextState,
+            onTextChange = {
+                viewModel.updateSearchTextState(newValue = it)
+            },
+            onCloseClicked = {
+                viewModel.submitIntent(ListIntent.OnCloseSearchClick)
+            },
+            onSearch = {
+                Timber.tag("Searched Text").d(it)
+            }) {
             Loading(state.isLoading)
 
             OnSuccess(state) {
