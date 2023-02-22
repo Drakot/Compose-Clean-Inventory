@@ -35,8 +35,8 @@ fun PictureGridView(
         item {
             AddPictureItem(onItemSelected)
         }
-        items(items = pictures) { hero ->
-            ItemPicture(hero, onItemSelected, onRemovePicture)
+        items(items = pictures) { pic ->
+            ItemPicture(pic, onItemSelected, onRemovePicture)
         }
 
     }, contentPadding = PaddingValues(end = 8.dp))
@@ -47,8 +47,8 @@ fun AddPictureItem(onItemSelected: (Uri) -> Unit) {
     Card(
         border = BorderStroke(1.dp, Color.LightGray),
         shape = RoundedCornerShape(20.dp), modifier = Modifier
-            .width(100.dp)
-            .height(116.dp)
+            .width(120.dp)
+            .height(120.dp)
             .padding(end = 8.dp, top = 8.dp)
 
     ) {
@@ -74,8 +74,8 @@ fun ItemPicture(
 ) {
     Card(
         border = BorderStroke(1.dp, Color.LightGray), shape = RoundedCornerShape(20.dp), modifier = Modifier
-            .width(100.dp)
-            .height(116.dp)
+            .width(120.dp)
+            .height(120.dp)
             .padding(end = 8.dp, top = 8.dp)
     ) {
         Box(modifier = Modifier

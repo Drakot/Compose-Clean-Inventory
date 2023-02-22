@@ -7,7 +7,7 @@ import com.dralsoft.inventory.core.ui.mvi.MviViewState
 import com.dralsoft.inventory.list.data.response.InventoryItem
 
 sealed class ListIntent : MviIntent {
-    object Load : ListIntent()
+    data class Load(val text: String="") : ListIntent()
     data class InventoryClick(val id: Long) : ListIntent()
     object AddInventory : ListIntent()
     object OnSearchClicked : ListIntent()

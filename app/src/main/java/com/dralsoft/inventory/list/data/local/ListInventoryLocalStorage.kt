@@ -7,10 +7,11 @@ import retrofit2.Response
 class ListInventoryLocalStorage {
     suspend fun listInventory(text: String): Response<ListInventoryResponse> {
         delay(500)
+
         val response = if (text.isNotEmpty()) {
             ListInventoryResponse(
-                listOf(mockInventoryResponse().data.random()),
-                Meta(Pagination(1, 1, 20, 50))
+                mockInventoryResponse().data.toMutableList().shuffled().subList(0, 5),
+                Meta(Pagination(1, 1, 10, 20))
             )
         } else {
             mockInventoryResponse()
@@ -113,7 +114,10 @@ fun mockInventoryResponse(): ListInventoryResponse {
                     listOf(
                         "https://ae01.alicdn.com/kf/Sb9b52f58ce32458dac4d5d1ae4d1c62dq/Mini-Placa-de-desarrollo-WIFI-placa-de-3-3-V-con-pines-D1-Mini-TYPE-C.jpg_Q90.jpg_.webp",
                         "https://ae01.alicdn.com/kf/S149b5a3fc0154c398f1941cfd52229713/Mini-Placa-de-desarrollo-WIFI-placa-de-3-3-V-con-pines-D1-Mini-TYPE-C.jpg_Q90.jpg_.webp",
-                        "https://ae01.alicdn.com/kf/Sf8c739abec4c4ac1b3c4007950f0be18t/Mini-Placa-de-desarrollo-WIFI-placa-de-3-3-V-con-pines-D1-Mini-TYPE-C.jpg_Q90.jpg_.webp"
+                        "https://ae01.alicdn.com/kf/Sf8c739abec4c4ac1b3c4007950f0be18t/Mini-Placa-de-desarrollo-WIFI-placa-de-3-3-V-con-pines-D1-Mini-TYPE-C.jpg_Q90.jpg_.webp",
+                        "https://ae01.alicdn.com/kf/S28fcb66ee94945a1a824936e988f42adU/Placa-de-desarrollo-WIFI-Mini-placa-de-3-3-V-con-pines-ESP8266-ESP-12-CH340G.jpg_Q90.jpg_.webp",
+                        "https://ae01.alicdn.com/kf/Sc072f46d1fcc42c0a7d73b9f029d3b89e/Placa-de-desarrollo-WIFI-Mini-placa-de-3-3-V-con-pines-ESP8266-ESP-12-CH340G.jpg_640x640.jpg",
+                        "https://ae01.alicdn.com/kf/S71750a354a0b473f81dd009dc6967150f/Placa-de-desarrollo-WIFI-Mini-placa-de-3-3-V-con-pines-ESP8266-ESP-12-CH340G.jpg_640x640.jpg"
                     ),
                     "OK",
                     "2021-01-01T00:00:00.000Z"
@@ -186,6 +190,20 @@ fun mockInventoryResponse(): ListInventoryResponse {
                     1,
                     listOf(
                         "https://ae01.alicdn.com/kf/Hb9a89f0d9040438f807a139aa543d9743/Conector-USB-3-1-tipo-C-de-24-Pines-adaptador-de-recept-culo-de-enchufe-macho.jpg_Q90.jpg_.webp",
+                    ),
+                    "OK",
+                    "2021-01-01T00:00:00.000Z"
+                ),
+            ), InventoryItem(
+                14,
+                InventoryAttributes(
+                    "HC-SR501",
+                    "HC-SR501-Sensor de movimiento infrarrojo piroeléctrico, módulo Detector para Arduino, HC-SR505, AM312, SR602, HW-MS03",
+                    5,
+                    "Cajonera dentro de Armario",
+                    1,
+                    listOf(
+                        "https://ae01.alicdn.com/kf/Ha7d07c10ea95422fb8ea0339ee9380c6e/HC-SR501-Sensor-de-movimiento-infrarrojo-piroel-ctrico-m-dulo-Detector-para-Arduino-HC-SR505-AM312.jpg_640x640.jpg",
                     ),
                     "OK",
                     "2021-01-01T00:00:00.000Z"

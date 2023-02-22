@@ -17,14 +17,14 @@ class ListInventoryViewModel @Inject constructor(
 
 
     init {
-        submitIntent(ListIntent.Load)
+        submitIntent(ListIntent.Load())
     }
 
     override fun submitIntent(intent: ListIntent) {
         when (intent) {
             is ListIntent.Load -> {
                 submitState(viewState.value.copy(isLoading = true))
-                load()
+                load(intent.text)
             }
             is ListIntent.InventoryClick -> {
                 submitSingleEvent(
@@ -45,6 +45,7 @@ class ListInventoryViewModel @Inject constructor(
 
             is ListIntent.OnCloseSearchClick -> {
                 submitState(viewState.value.copy(searchState = SearchWidgetState.CLOSED))
+                load()
             }
             is ListIntent.OnSearch -> {
                 //Call service to search

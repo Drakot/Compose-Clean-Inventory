@@ -4,13 +4,15 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Image
 import androidx.compose.material.icons.rounded.PhotoCamera
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
@@ -76,11 +78,11 @@ fun InventoryScreen(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalLayoutApi::class)
 @Composable
 fun Form(viewModel: InventoryViewModel, scope: CoroutineScope) {
     val state = viewModel.viewState.collectAsState().value
-    val context = LocalContext.current
+
     val modifier = Modifier.fillMaxWidth()
 
     val modalSheetState = rememberModalBottomSheetState(
@@ -88,61 +90,48 @@ fun Form(viewModel: InventoryViewModel, scope: CoroutineScope) {
         confirmStateChange = { it != ModalBottomSheetValue.HalfExpanded },
         skipHalfExpanded = true
     )
-
     val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
     ) { uri ->
         viewModel.submitIntent(InventoryIntent.ImageAdded(uri))
     }
 
-    Column(modifier = Modifier.padding(16.dp)) {
-        PictureGridView(pictures = state.pictures, {
-            scope.launch {
-                if (it.scheme == null) {
-                    if (modalSheetState.isVisible)
-                        modalSheetState.hide()
-                    else
-                        modalSheetState.animateTo(ModalBottomSheetValue.Expanded)
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+
+        item {
+            FlowRow(
+                maxItemsInEachRow = 3,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp)
+            ) {
+
+                AddPictureItem {
+                    scope.launch {
+                        if (modalSheetState.isVisible)
+                            modalSheetState.hide()
+                        else
+                            modalSheetState.animateTo(ModalBottomSheetValue.Expanded)
+                    }
                 }
+                state.pictures.forEach {
+                    ItemPicture(it, {
+
+                    }, {
+
+                    })
+                }
+
             }
-        }, {
-
-        })
-
-        Field(
-            state.name,
-            TextTypeInfo(context.getString(com.dralsoft.inventory.R.string.name), KeyboardType.Text),
-            modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(top = 16.dp)
-        ) {
-            viewModel.submitIntent(InventoryIntent.NameChanged(it))
-        }
-        MySpacer(16)
-
-        Field(
-            state.description,
-            TextTypeInfo(context.getString(com.dralsoft.inventory.R.string.desc), KeyboardType.Text),
-            modifier.align(Alignment.CenterHorizontally)
-        ) {
-            viewModel.submitIntent(InventoryIntent.DescChanged(it))
-        }
-        MySpacer(16)
-
-        Field(
-            state.amount,
-            TextTypeInfo(context.getString(com.dralsoft.inventory.R.string.amount), KeyboardType.Number),
-            modifier.align(Alignment.CenterHorizontally)
-        ) {
-            viewModel.submitIntent(InventoryIntent.AmountChanged(it))
         }
 
-        MySpacer(16)
-
-        Button(enabled = state.saveEnabled, modifier = modifier.height(55.dp), onClick = {
-            viewModel.submitIntent(InventoryIntent.Save)
-        }) {
-            Text(text = context.getString(com.dralsoft.inventory.R.string.save))
+        item {
+            InventoryTextFields(state, viewModel, modifier)
+            ConfirmationButton(state, viewModel, modifier)
         }
     }
 
@@ -168,6 +157,54 @@ fun Form(viewModel: InventoryViewModel, scope: CoroutineScope) {
     Loading(state.isLoading)
 }
 
+@Composable
+fun ConfirmationButton(state: InventoryState, viewModel: InventoryViewModel, modifier: Modifier) {
+    val context = LocalContext.current
+    Button(enabled = state.saveEnabled, modifier = modifier.height(55.dp), onClick = {
+        viewModel.submitIntent(InventoryIntent.Save)
+    }) {
+        Text(text = context.getString(com.dralsoft.inventory.R.string.save))
+    }
+}
+
+@Composable
+fun InventoryTextFields(state: InventoryState, viewModel: InventoryViewModel, modifier: Modifier) {
+    val context = LocalContext.current
+    Column() {
+        Field(
+            state.name,
+            TextTypeInfo(context.getString(com.dralsoft.inventory.R.string.name), KeyboardType.Text),
+            //   modifier.align(Alignment.CenterHorizontally).padding(top = 16.dp)
+            modifier = modifier,
+        ) {
+            viewModel.submitIntent(InventoryIntent.NameChanged(it))
+        }
+        MySpacer(16)
+
+        Field(
+
+            state.description,
+            TextTypeInfo(context.getString(com.dralsoft.inventory.R.string.desc), KeyboardType.Text, false),
+            modifier = modifier,
+            //  modifier.align(Alignment.CenterHorizontally)
+        ) {
+            viewModel.submitIntent(InventoryIntent.DescChanged(it))
+        }
+        MySpacer(16)
+
+        Field(
+            state.amount,
+            TextTypeInfo(context.getString(com.dralsoft.inventory.R.string.amount), KeyboardType.Number),
+            //modifier.align(Alignment.CenterHorizontally)
+            modifier = modifier,
+        ) {
+            viewModel.submitIntent(InventoryIntent.AmountChanged(it))
+        }
+
+        MySpacer(16)
+    }
+}
+
 
 @Composable
 fun Field(text: String, info: TextTypeInfo, modifier: Modifier, onTextChange: (String) -> Unit) {
@@ -176,10 +213,10 @@ fun Field(text: String, info: TextTypeInfo, modifier: Modifier, onTextChange: (S
         value = text, onValueChange = { onTextChange(it) },
         modifier = modifier,
         label = { Text(info.text) },
-        maxLines = 1,
-        singleLine = true,
+        // maxLines = 1,
+        singleLine = info.singleLine,
         keyboardOptions = KeyboardOptions(keyboardType = info.type)
     )
 }
 
-data class TextTypeInfo(val text: String, val type: KeyboardType)
+data class TextTypeInfo(val text: String, val type: KeyboardType, val singleLine: Boolean = true)

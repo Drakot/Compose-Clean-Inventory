@@ -24,7 +24,6 @@ import com.dralsoft.inventory.core.ScaffoldView
 import com.dralsoft.inventory.core.ViewConfig
 import com.dralsoft.inventory.core.ui.mvi.collectInLaunchedEffectWithLifecycle
 import com.dralsoft.inventory.list.data.response.InventoryItem
-import timber.log.Timber
 
 @Composable
 fun ListInventoryScreen(navController: NavController, viewModel: ListInventoryViewModel = hiltViewModel()) {
@@ -46,7 +45,7 @@ fun ListInventoryScreen(navController: NavController, viewModel: ListInventoryVi
                 viewModel.submitIntent(ListIntent.OnCloseSearchClick)
             },
             onSearch = {
-                Timber.tag("Searched Text").d(it)
+                viewModel.submitIntent(ListIntent.OnSearch(it))
             }) {
             Loading(state.isLoading)
 
