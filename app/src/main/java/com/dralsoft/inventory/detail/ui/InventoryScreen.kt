@@ -10,6 +10,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Image
 import androidx.compose.material.icons.rounded.PhotoCamera
+import androidx.compose.material.icons.rounded.Save
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
@@ -19,7 +20,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.dralsoft.inventory.R
@@ -73,7 +73,9 @@ fun InventoryScreen(
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        ScaffoldView(ViewConfig(showBackButton = true).copy(onClickNavIcon = {
+        ScaffoldView(ViewConfig(showBackButton = true, fabImage = Icons.Rounded.Save, onFABClick = {
+            viewModel.submitIntent(InventoryIntent.Save)
+        }).copy(onClickNavIcon = {
             navController.popBackStack()
         })) {
             Form(viewModel, scope)
@@ -98,66 +100,42 @@ fun Form(viewModel: InventoryViewModel, scope: CoroutineScope) {
     ) { uri ->
         viewModel.submitIntent(InventoryIntent.ImageAdded(uri))
     }
-    ConstraintLayout(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 16.dp)
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(16.dp)
     ) {
 
-        val (lazyColumnRef, buttonRef) = createRefs()
+        item {
+            FlowRow(
+                maxItemsInEachRow = 3,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp)
+            ) {
 
-        LazyColumn(
-
-            modifier = Modifier
-                .fillMaxSize()
-                .constrainAs(lazyColumnRef) {
-                    bottom.linkTo(buttonRef.top)
-                    top.linkTo(parent.top)
-                },
-            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 24.dp)
-        ) {
-
-            item {
-                FlowRow(
-                    maxItemsInEachRow = 3,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 16.dp)
-                ) {
-
-                    AddPictureItem {
-                        scope.launch {
-                            if (modalSheetState.isVisible)
-                                modalSheetState.hide()
-                            else
-                                modalSheetState.animateTo(ModalBottomSheetValue.Expanded)
-                        }
+                AddPictureItem {
+                    scope.launch {
+                        if (modalSheetState.isVisible)
+                            modalSheetState.hide()
+                        else
+                            modalSheetState.animateTo(ModalBottomSheetValue.Expanded)
                     }
-                    state.pictures.forEach {
-                        ItemPicture(it, {
-
-                        }, {
-
-                        })
-                    }
-
                 }
-            }
+                state.pictures.forEach {
+                    ItemPicture(it, {
 
-            item {
-                InventoryTextFields(state, viewModel, modifier)
+                    }, {
+
+                    })
+                }
 
             }
         }
 
-        ConfirmationButton(
-            state,
-            viewModel,
-            modifier.constrainAs(buttonRef) {
-                //   top.linkTo(lazyColumnRef.bottom)
-                bottom.linkTo(parent.bottom)
-            }
-        )
+        item {
+            InventoryTextFields(state, viewModel, modifier)
+
+        }
     }
     BottomSheetLayout(modalSheetState) {
         Column(
@@ -199,7 +177,7 @@ fun InventoryTextFields(state: InventoryState, viewModel: InventoryViewModel, mo
     Column {
         Field(
             state.name,
-            TextTypeInfo(context.getString(R.string.name), KeyboardType.Text,ImeAction.Next),
+            TextTypeInfo(context.getString(R.string.name), KeyboardType.Text, ImeAction.Next),
             modifier = modifier,
         ) {
             viewModel.submitIntent(InventoryIntent.NameChanged(it))
@@ -223,7 +201,7 @@ fun InventoryTextFields(state: InventoryState, viewModel: InventoryViewModel, mo
             state.amount,
             TextTypeInfo(
                 context.getString(R.string.amount),
-                KeyboardType.Number,ImeAction.Done
+                KeyboardType.Number, ImeAction.Done
             ),
             modifier = modifier,
         ) {

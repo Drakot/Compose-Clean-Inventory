@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import com.dralsoft.inventory.core.ui.MyFab
 import com.dralsoft.inventory.core.ui.MyTopAppBar
 import com.dralsoft.inventory.core.ui.SearchWidgetState
@@ -47,18 +48,18 @@ fun Loading(isLoading: Boolean) {
 }
 
 data class ViewConfig(
-    val showFAB: Boolean = false,
     val showBackButton: Boolean = false,
     val onClick: (String) -> Unit = {},
     val onClickNavIcon: () -> Unit = {},
-    val onSearchClicked: (() -> Unit)?  = null,
+    val onSearchClicked: (() -> Unit)? = null,
+    val onFABClick: () -> Unit = {},
+    val fabImage: ImageVector? = null
 )
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ScaffoldView(
     viewConfig: ViewConfig = ViewConfig(),
-    onFABClick: () -> Unit = {},
     searchWidgetState: SearchWidgetState = SearchWidgetState.CLOSED,
     searchTextState: String = "",
     onTextChange: (String) -> Unit = {},
@@ -68,7 +69,6 @@ fun ScaffoldView(
 ) {
     val state = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
-
 
     Scaffold(
         topBar = {
@@ -83,8 +83,8 @@ fun ScaffoldView(
         }, scaffoldState = state,
 
         floatingActionButton = {
-            if (viewConfig.showFAB) {
-                MyFab(onFABClick)
+            viewConfig.fabImage?.let {
+                MyFab(viewConfig.fabImage, onFABClick = viewConfig.onFABClick)
             }
         }
     ) {

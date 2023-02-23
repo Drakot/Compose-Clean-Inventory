@@ -6,10 +6,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 
 @Composable
-fun MyFab(onFABClick: () -> Unit = {}) {
+fun MyFab(imageVector: ImageVector? = Icons.Filled.Add, onFABClick: () -> Unit = {}) {
     FloatingActionButton(contentColor = Color.White, onClick = onFABClick) {
-        Icon(imageVector = Icons.Filled.Add, contentDescription = "add")
+        if (imageVector != null) {
+            Icon(imageVector = imageVector, contentDescription = "add")
+        }
     }
 }

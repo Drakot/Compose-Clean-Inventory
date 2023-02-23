@@ -8,6 +8,8 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -31,11 +33,11 @@ fun ListInventoryScreen(navController: NavController, viewModel: ListInventoryVi
 
 
     Box(modifier = Modifier.fillMaxSize()) {
-        ScaffoldView(ViewConfig(showFAB = true, onSearchClicked = {
+        ScaffoldView(ViewConfig(fabImage = Icons.Filled.Add, onSearchClicked = {
             viewModel.submitIntent(ListIntent.OnSearchClicked)
-        }), onFABClick = {
+        }, onFABClick = {
             viewModel.submitIntent(ListIntent.AddInventory)
-        },
+        }),
             searchWidgetState = state.searchState,
             searchTextState = state.searchText,
             onTextChange = {
