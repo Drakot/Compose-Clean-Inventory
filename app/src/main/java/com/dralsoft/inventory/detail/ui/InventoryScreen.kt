@@ -14,9 +14,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.dralsoft.inventory.R
@@ -95,46 +98,67 @@ fun Form(viewModel: InventoryViewModel, scope: CoroutineScope) {
     ) { uri ->
         viewModel.submitIntent(InventoryIntent.ImageAdded(uri))
     }
-
-    LazyColumn(
+    ConstraintLayout(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(top = 16.dp)
     ) {
 
-        item {
-            FlowRow(
-                maxItemsInEachRow = 3,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp)
-            ) {
+        val (lazyColumnRef, buttonRef) = createRefs()
 
-                AddPictureItem {
-                    scope.launch {
-                        if (modalSheetState.isVisible)
-                            modalSheetState.hide()
-                        else
-                            modalSheetState.animateTo(ModalBottomSheetValue.Expanded)
+        LazyColumn(
+
+            modifier = Modifier
+                .fillMaxSize()
+                .constrainAs(lazyColumnRef) {
+                    bottom.linkTo(buttonRef.top)
+                    top.linkTo(parent.top)
+                },
+            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 24.dp)
+        ) {
+
+            item {
+                FlowRow(
+                    maxItemsInEachRow = 3,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp)
+                ) {
+
+                    AddPictureItem {
+                        scope.launch {
+                            if (modalSheetState.isVisible)
+                                modalSheetState.hide()
+                            else
+                                modalSheetState.animateTo(ModalBottomSheetValue.Expanded)
+                        }
                     }
-                }
-                state.pictures.forEach {
-                    ItemPicture(it, {
+                    state.pictures.forEach {
+                        ItemPicture(it, {
 
-                    }, {
+                        }, {
 
-                    })
+                        })
+                    }
+
                 }
+            }
+
+            item {
+                InventoryTextFields(state, viewModel, modifier)
 
             }
         }
 
-        item {
-            InventoryTextFields(state, viewModel, modifier)
-            ConfirmationButton(state, viewModel, modifier)
-        }
+        ConfirmationButton(
+            state,
+            viewModel,
+            modifier.constrainAs(buttonRef) {
+                //   top.linkTo(lazyColumnRef.bottom)
+                bottom.linkTo(parent.bottom)
+            }
+        )
     }
-
     BottomSheetLayout(modalSheetState) {
         Column(
             modifier = Modifier
@@ -160,21 +184,22 @@ fun Form(viewModel: InventoryViewModel, scope: CoroutineScope) {
 @Composable
 fun ConfirmationButton(state: InventoryState, viewModel: InventoryViewModel, modifier: Modifier) {
     val context = LocalContext.current
-    Button(enabled = state.saveEnabled, modifier = modifier.height(55.dp), onClick = {
+    Button(enabled = state.saveEnabled, modifier = modifier
+        .height(60.dp)
+        .fillMaxWidth(), shape = RectangleShape, onClick = {
         viewModel.submitIntent(InventoryIntent.Save)
     }) {
-        Text(text = context.getString(com.dralsoft.inventory.R.string.save))
+        Text(text = context.getString(R.string.save))
     }
 }
 
 @Composable
 fun InventoryTextFields(state: InventoryState, viewModel: InventoryViewModel, modifier: Modifier) {
     val context = LocalContext.current
-    Column() {
+    Column {
         Field(
             state.name,
-            TextTypeInfo(context.getString(com.dralsoft.inventory.R.string.name), KeyboardType.Text),
-            //   modifier.align(Alignment.CenterHorizontally).padding(top = 16.dp)
+            TextTypeInfo(context.getString(R.string.name), KeyboardType.Text,ImeAction.Next),
             modifier = modifier,
         ) {
             viewModel.submitIntent(InventoryIntent.NameChanged(it))
@@ -184,9 +209,11 @@ fun InventoryTextFields(state: InventoryState, viewModel: InventoryViewModel, mo
         Field(
 
             state.description,
-            TextTypeInfo(context.getString(com.dralsoft.inventory.R.string.desc), KeyboardType.Text, false),
+            TextTypeInfo(
+                context.getString(R.string.desc), KeyboardType.Text,
+                ImeAction.Next, false
+            ),
             modifier = modifier,
-            //  modifier.align(Alignment.CenterHorizontally)
         ) {
             viewModel.submitIntent(InventoryIntent.DescChanged(it))
         }
@@ -194,8 +221,10 @@ fun InventoryTextFields(state: InventoryState, viewModel: InventoryViewModel, mo
 
         Field(
             state.amount,
-            TextTypeInfo(context.getString(com.dralsoft.inventory.R.string.amount), KeyboardType.Number),
-            //modifier.align(Alignment.CenterHorizontally)
+            TextTypeInfo(
+                context.getString(R.string.amount),
+                KeyboardType.Number,ImeAction.Done
+            ),
             modifier = modifier,
         ) {
             viewModel.submitIntent(InventoryIntent.AmountChanged(it))
@@ -213,10 +242,14 @@ fun Field(text: String, info: TextTypeInfo, modifier: Modifier, onTextChange: (S
         value = text, onValueChange = { onTextChange(it) },
         modifier = modifier,
         label = { Text(info.text) },
-        // maxLines = 1,
         singleLine = info.singleLine,
-        keyboardOptions = KeyboardOptions(keyboardType = info.type)
+        keyboardOptions = KeyboardOptions(keyboardType = info.type, imeAction = info.keyboardAction)
     )
 }
 
-data class TextTypeInfo(val text: String, val type: KeyboardType, val singleLine: Boolean = true)
+data class TextTypeInfo(
+    val text: String,
+    val type: KeyboardType,
+    val keyboardAction: ImeAction = ImeAction.Default,
+    val singleLine: Boolean = true
+)
