@@ -5,10 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.dralsoft.inventory.core.domain.ValidationResult
 import com.dralsoft.inventory.core.ui.mvi.AbstractMviViewModel
 import com.dralsoft.inventory.detail.data.response.InventoryResponse
-import com.dralsoft.inventory.detail.domain.InventoryUseCase
-import com.dralsoft.inventory.detail.domain.SaveInventoryUseCase
-import com.dralsoft.inventory.detail.domain.ValidateAmount
-import com.dralsoft.inventory.detail.domain.ValidateName
+import com.dralsoft.inventory.detail.domain.DetailUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.launchIn
@@ -18,10 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class InventoryViewModel @Inject constructor(
-    private val useCase: InventoryUseCase,
-    private val saveInventoryUseCase: SaveInventoryUseCase,
-    private val validateName: ValidateName,
-    private val validateAmount: ValidateAmount,
+    private val useCases: DetailUseCases,
 ) : AbstractMviViewModel<InventoryIntent, InventoryState, InventorySingleEvent<InventoryResponse>>() {
 
     override fun initState() = InventoryState()
@@ -40,7 +34,7 @@ class InventoryViewModel @Inject constructor(
                 }
 
                 is InventoryIntent.AmountChanged -> {
-                    val amountResult = validateAmount.execute(intent.amount)
+                    val amountResult = useCases.validateAmount(intent.amount)
 
                     checkField(amountResult) {
                         if (!it.successful) {
@@ -62,7 +56,7 @@ class InventoryViewModel @Inject constructor(
 
                 is InventoryIntent.NameChanged -> {
 
-                    val result = validateAmount.execute(intent.name)
+                    val result = useCases.validateAmount(intent.name)
 
                     checkField(result) {
                         if (!it.successful) {
@@ -90,8 +84,8 @@ class InventoryViewModel @Inject constructor(
     }
 
     private fun checkFields() {
-        val nameResult = validateName.execute(viewState.value.name)
-        val amountResult = validateAmount.execute(viewState.value.amount)
+        val nameResult = useCases.validateName(viewState.value.name)
+        val amountResult = useCases.validateAmount(viewState.value.amount)
 
         val isValid = formValidation(nameResult, amountResult)
         isValid.onEach {
@@ -103,7 +97,7 @@ class InventoryViewModel @Inject constructor(
         viewModelScope.launch {
             submitState(viewState.value.copy(isLoading = true, saveEnabled = false))
 
-            val result = saveInventoryUseCase.invoke(viewState.value.map())
+            val result = useCases.saveInventoryUseCase.invoke(viewState.value.map())
             submitState(viewState.value.copy(isLoading = false, saveEnabled = true))
             if (result.isSuccessful) {
                 submitSingleEvent(InventorySingleEvent.OnSaveSuccess)
@@ -119,22 +113,20 @@ class InventoryViewModel @Inject constructor(
             submitState(viewState.value.copy(saveEnabled = false, isLoading = true))
 
             inventoryId?.let {
-                val response = useCase.invoke(inventoryId)
+                val response = useCases.inventoryUseCase.invoke(inventoryId)
 
                 if (response.isSuccessful) {
                     response.body()?.let {
-                        val attributes = it.data.attributes
-                        submitState(
-                            viewState.value.copy(
-                                it.data.id,
-                                attributes.name,
-                                attributes.description,
-                                attributes.amount.toString(),
-                                attributes.pictures.map { picture ->
-                                    Uri.parse(picture)
-                                }
+                        it.data.attributes.apply {
+                            submitState(
+                                viewState.value.copy(
+                                    it.data.id, name, description, amount.toString(),
+                                    pictures.map { picture ->
+                                        Uri.parse(picture)
+                                    }
+                                )
                             )
-                        )
+                        }
                     }
                 } else {
                     submitSingleEvent(InventorySingleEvent.Error(response.message()))

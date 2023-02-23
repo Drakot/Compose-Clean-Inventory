@@ -1,5 +1,6 @@
 package com.dralsoft.inventory.list.data.local
 
+import com.dralsoft.inventory.detail.data.response.InventoryResponse
 import com.dralsoft.inventory.list.data.response.*
 import kotlinx.coroutines.delay
 import retrofit2.Response
@@ -18,6 +19,11 @@ class ListInventoryLocalStorage {
         }
 
         return Response.success(response)
+    }
+
+    suspend fun delete(id: Long): Response<InventoryResponse> {
+        delay(500)
+        return Response.success(InventoryResponse(mockInventoryResponse().data.first { it.id == id }))
     }
 }
 

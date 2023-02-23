@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 class ValidateAmount @Inject constructor() {
 
-    fun execute(amountStr: String): Flow<ValidationResult> = flow {
+    operator fun invoke(amountStr: String): Flow<ValidationResult> = flow {
         val ok = amountStr.isDigitsOnly() && amountStr.isNotEmpty()
 
         if (!ok) {

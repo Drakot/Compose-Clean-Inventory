@@ -1,5 +1,6 @@
 package com.dralsoft.inventory.list.data
 
+import com.dralsoft.inventory.detail.data.response.InventoryResponse
 import com.dralsoft.inventory.list.data.local.ListInventoryLocalStorage
 import com.dralsoft.inventory.list.data.network.ListInventoryClient
 import com.dralsoft.inventory.list.data.response.ListInventoryResponse
@@ -11,7 +12,11 @@ class ListInventoryRepository @Inject constructor(
     private val mock: ListInventoryLocalStorage
 ) {
 
-    suspend fun listInventory(text:String): Response<ListInventoryResponse> {
+    suspend fun listInventory(text: String): Response<ListInventoryResponse> {
         return mock.listInventory(text)
+    }
+
+    suspend fun delete(id: Long): Response<InventoryResponse> {
+        return mock.delete(id)
     }
 }

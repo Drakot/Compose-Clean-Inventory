@@ -5,14 +5,14 @@ import com.dralsoft.inventory.core.navigation.InventoryItemInput
 import com.dralsoft.inventory.core.navigation.NavRoutes
 import com.dralsoft.inventory.core.ui.SearchWidgetState
 import com.dralsoft.inventory.core.ui.mvi.AbstractMviViewModel
-import com.dralsoft.inventory.list.domain.ListInventoryUseCase
+import com.dralsoft.inventory.list.domain.ListUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ListInventoryViewModel @Inject constructor(
-    private val useCase: ListInventoryUseCase
+    private val useCases: ListUseCases
 ) : AbstractMviViewModel<ListIntent, ListInventoryState, ListUiSingleEvent>() {
 
 
@@ -66,7 +66,7 @@ class ListInventoryViewModel @Inject constructor(
 
     private fun load(text: String = "") {
         viewModelScope.launch {
-            val response = useCase.invoke(text)
+            val response = useCases.listInventoryUseCase.invoke(text)
             submitState(viewState.value.copy(isLoading = false))
             if (response.isSuccessful) {
                 response.body()?.let {
