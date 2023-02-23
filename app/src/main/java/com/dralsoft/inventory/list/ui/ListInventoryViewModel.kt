@@ -7,6 +7,7 @@ import com.dralsoft.inventory.core.ui.SearchWidgetState
 import com.dralsoft.inventory.core.ui.mvi.AbstractMviViewModel
 import com.dralsoft.inventory.list.domain.ListUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -15,6 +16,8 @@ class ListInventoryViewModel @Inject constructor(
     private val useCases: ListUseCases
 ) : AbstractMviViewModel<ListIntent, ListInventoryState, ListUiSingleEvent>() {
 
+
+    private var listJob: Job? = null
 
     init {
         submitIntent(ListIntent.Load())
@@ -65,7 +68,8 @@ class ListInventoryViewModel @Inject constructor(
 
 
     private fun load(text: String = "") {
-        viewModelScope.launch {
+        listJob?.cancel()
+        listJob = viewModelScope.launch {
             val response = useCases.listInventoryUseCase.invoke(text)
             submitState(viewState.value.copy(isLoading = false))
             if (response.isSuccessful) {
