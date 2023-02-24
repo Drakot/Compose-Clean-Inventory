@@ -5,7 +5,7 @@ import com.dralsoft.inventory.list.data.response.*
 import kotlinx.coroutines.delay
 import retrofit2.Response
 
-class ListInventoryLocalStorage {
+class InventoryLocalStorage {
     suspend fun listInventory(text: String): Response<ListInventoryResponse> {
         delay(500)
 
@@ -24,6 +24,24 @@ class ListInventoryLocalStorage {
     suspend fun delete(id: Long): Response<InventoryResponse> {
         delay(500)
         return Response.success(InventoryResponse(mockInventoryResponse().data.first { it.id == id }))
+    }
+
+    suspend fun getInventory(id: Long): Response<InventoryResponse> {
+        delay(500)
+        return Response.success(
+            InventoryResponse(
+                mockInventoryResponse().data.find { it.id == id }!!
+            )
+        )
+    }
+
+    suspend fun saveInventory(item: InventoryItem): Response<InventoryResponse> {
+        delay(500)
+        return Response.success(
+            InventoryResponse(
+                item
+            )
+        )
     }
 }
 

@@ -1,7 +1,6 @@
 package com.dralsoft.inventory.core.di
 
-import com.dralsoft.inventory.detail.data.local.InventoryLocalStorage
-import com.dralsoft.inventory.list.data.local.ListInventoryLocalStorage
+import com.dralsoft.inventory.list.data.local.InventoryLocalStorage
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,13 +13,7 @@ class LocalStorageModule {
 
     @Provides
     @Singleton
-    fun provideMockListData(): ListInventoryLocalStorage {
-        return ListInventoryLocalStorage()
-    }
-
-    @Provides
-    @Singleton
-    fun provideMockInventoryData(): InventoryLocalStorage {
+    fun provideInventoryLocalStorage(): InventoryLocalStorage {
         return InventoryLocalStorage()
     }
 }

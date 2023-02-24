@@ -1,7 +1,10 @@
 package com.dralsoft.inventory.core.di
 
-import com.dralsoft.inventory.detail.data.network.InventoryClient
-import com.dralsoft.inventory.list.data.network.ListInventoryClient
+import com.dralsoft.inventory.core.data.RepositoryImpl
+import com.dralsoft.inventory.core.data.network.InventoryClient
+import com.dralsoft.inventory.core.domain.Repository
+import com.dralsoft.inventory.detail.data.network.InventoryService
+import com.dralsoft.inventory.list.data.local.InventoryLocalStorage
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,15 +27,19 @@ class NetworkModule {
 
     }
 
-    @Provides
     @Singleton
-    fun provideListClient(retrofit: Retrofit): ListInventoryClient {
-        return retrofit.create(ListInventoryClient::class.java)
-    }
+    @Provides
+    fun provideRepository(
+        service: InventoryService,
+        db: InventoryLocalStorage
+    ) = RepositoryImpl(service, db) as Repository
+
+
 
     @Provides
     @Singleton
     fun provideClient(retrofit: Retrofit): InventoryClient {
         return retrofit.create(InventoryClient::class.java)
     }
+
 }

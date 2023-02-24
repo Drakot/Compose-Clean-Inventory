@@ -1,6 +1,6 @@
 package com.dralsoft.inventory.detail.di
 
-import com.dralsoft.inventory.detail.data.InventoryRepository
+import com.dralsoft.inventory.core.domain.Repository
 import com.dralsoft.inventory.detail.domain.*
 import dagger.Module
 import dagger.Provides
@@ -14,7 +14,7 @@ object DetailUseCasesModule {
 
     @Provides
     @Singleton
-    fun provideDetailUseCases(repository: InventoryRepository): DetailUseCases {
+    fun provideDetailUseCases(repository: Repository): DetailUseCases {
         return DetailUseCases(
             validateAmount = ValidateAmount(),
             validateName = ValidateName(),

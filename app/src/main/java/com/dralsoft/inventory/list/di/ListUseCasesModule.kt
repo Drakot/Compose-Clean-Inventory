@@ -1,6 +1,6 @@
 package com.dralsoft.inventory.list.di
 
-import com.dralsoft.inventory.list.data.ListInventoryRepository
+import com.dralsoft.inventory.core.domain.Repository
 import com.dralsoft.inventory.list.domain.DeleteInventoryUseCase
 import com.dralsoft.inventory.list.domain.ListInventoryUseCase
 import com.dralsoft.inventory.list.domain.ListUseCases
@@ -16,7 +16,7 @@ object ListUseCasesModule {
 
     @Provides
     @Singleton
-    fun provideListUseCases(repository: ListInventoryRepository): ListUseCases {
+    fun provideListUseCases(repository: Repository): ListUseCases {
         return ListUseCases(
             deleteInventoryUseCase = DeleteInventoryUseCase(repository),
             listInventoryUseCase = ListInventoryUseCase(repository),
