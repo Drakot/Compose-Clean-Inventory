@@ -2,6 +2,7 @@ package com.dralsoft.inventory.detail.ui
 
 import android.net.Uri
 import androidx.lifecycle.viewModelScope
+import com.dralsoft.inventory.core.Resource
 import com.dralsoft.inventory.core.domain.ValidationResult
 import com.dralsoft.inventory.core.ui.mvi.AbstractMviViewModel
 import com.dralsoft.inventory.detail.data.response.InventoryResponse
@@ -97,12 +98,17 @@ class InventoryViewModel @Inject constructor(
         viewModelScope.launch {
             submitState(viewState.value.copy(isLoading = true, saveEnabled = false))
 
-            val result = useCases.saveInventoryUseCase.invoke(viewState.value.map())
-            submitState(viewState.value.copy(isLoading = false, saveEnabled = true))
-            if (result.isSuccessful) {
-                submitSingleEvent(InventorySingleEvent.OnSaveSuccess)
-            } else {
-                submitSingleEvent(InventorySingleEvent.Error(result.message()))
+            useCases.saveInventoryUseCase.invoke(viewState.value.map()).collect {
+                when (it) {
+                    is Resource.Success -> {
+                        submitSingleEvent(InventorySingleEvent.OnSaveSuccess)
+                    }
+                    else -> {
+                        submitSingleEvent(InventorySingleEvent.Error(it.error?.message ?: "Error"))
+                    }
+                }
+
+                submitState(viewState.value.copy(isLoading = false, saveEnabled = true))
             }
         }
     }
@@ -113,27 +119,31 @@ class InventoryViewModel @Inject constructor(
             submitState(viewState.value.copy(saveEnabled = false, isLoading = true))
 
             inventoryId?.let {
-                val response = useCases.inventoryUseCase.invoke(inventoryId)
 
-                if (response.isSuccessful) {
-                    response.body()?.let {
-                        it.data.attributes.apply {
-                            submitState(
-                                viewState.value.copy(
-                                    it.data.id, name, description, amount.toString(),
-                                    pictures.map { picture ->
-                                        Uri.parse(picture)
-                                    }
+                useCases.inventoryUseCase.invoke(inventoryId).collect {
+                    when (it) {
+                        is Resource.Success -> {
+                            it.data?.data?.attributes?.apply {
+                                submitState(
+                                    viewState.value.copy(
+                                        it.data.data.id, name, description, amount.toString(),
+                                        pictures.map { picture ->
+                                            Uri.parse(picture)
+                                        }
+                                    )
                                 )
-                            )
+                            }
+                        }
+                        else -> {
+                            submitSingleEvent(InventorySingleEvent.Error(it.error?.message ?: "Error"))
                         }
                     }
-                } else {
-                    submitSingleEvent(InventorySingleEvent.Error(response.message()))
-                }
-            }
 
-            submitState(viewState.value.copy(saveEnabled = inventoryId != null, isLoading = false))
+                    submitState(viewState.value.copy(saveEnabled = true, isLoading = false))
+                }
+            }?: run{
+                submitState(viewState.value.copy(saveEnabled = true, isLoading = false))
+            }
         }
     }
 

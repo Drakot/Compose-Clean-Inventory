@@ -1,26 +1,29 @@
 package com.dralsoft.inventory
 
+import com.dralsoft.inventory.core.Resource
 import com.dralsoft.inventory.core.domain.Repository
 import com.dralsoft.inventory.detail.data.response.InventoryResponse
 import com.dralsoft.inventory.list.data.local.InventoryLocalStorage
 import com.dralsoft.inventory.list.data.response.InventoryItem
 import com.dralsoft.inventory.list.data.response.ListInventoryResponse
-import retrofit2.Response
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class MockRepository : Repository {
-    override suspend fun listInventory(text: String): Response<ListInventoryResponse> {
-        return InventoryLocalStorage().listInventory("")
+
+    override suspend fun listInventory(text: String): Flow<Resource<ListInventoryResponse>> = flow {
+        InventoryLocalStorage().listInventory("")
     }
 
-    override suspend fun delete(id: Long): Response<InventoryResponse> {
-        return InventoryLocalStorage().getInventory(id)
+    override suspend fun delete(id: Long): Flow<Resource<InventoryResponse>> = flow  {
+        InventoryLocalStorage().delete(id)
     }
 
-    override suspend fun getInventory(id: Long): Response<InventoryResponse> {
-        return InventoryLocalStorage().getInventory(id)
+    override suspend fun getInventory(id: Long): Flow<Resource<InventoryResponse>> =flow {
+        InventoryLocalStorage().getInventory(id)
     }
 
-    override suspend fun saveInventory(item: InventoryItem): Response<InventoryResponse> {
-        return Response.success(InventoryResponse(item))
+    override suspend fun saveInventory(item: InventoryItem): Flow<Resource<InventoryResponse>> = flow {
+        InventoryResponse(item)
     }
 }

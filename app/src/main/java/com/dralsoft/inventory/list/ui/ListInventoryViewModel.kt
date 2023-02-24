@@ -1,6 +1,7 @@
 package com.dralsoft.inventory.list.ui
 
 import androidx.lifecycle.viewModelScope
+import com.dralsoft.inventory.core.Resource
 import com.dralsoft.inventory.core.navigation.InventoryItemInput
 import com.dralsoft.inventory.core.navigation.NavRoutes
 import com.dralsoft.inventory.core.ui.SearchWidgetState
@@ -70,14 +71,18 @@ class ListInventoryViewModel @Inject constructor(
     private fun load(text: String = "") {
         listJob?.cancel()
         listJob = viewModelScope.launch {
-            val response = useCases.listInventoryUseCase.invoke(text)
-            submitState(viewState.value.copy(isLoading = false))
-            if (response.isSuccessful) {
-                response.body()?.let {
-                    submitState(viewState.value.copy(data = it.data))
+            useCases.listInventoryUseCase.invoke(text).collect {
+                submitState(viewState.value.copy(isLoading = false))
+                when (it) {
+                    is Resource.Success -> {
+                        it.data?.let { data ->
+                            submitState(viewState.value.copy(data = data.data))
+                        }
+                    }
+                    else -> {
+                        submitSingleEvent(ListUiSingleEvent.Error(it.error?.message ?: "Error"))
+                    }
                 }
-            } else {
-                submitSingleEvent(ListUiSingleEvent.Error(response.message()))
             }
         }
     }
