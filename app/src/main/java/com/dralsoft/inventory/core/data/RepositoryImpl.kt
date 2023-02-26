@@ -16,11 +16,9 @@ class RepositoryImpl @Inject constructor(
     private val db: InventoryLocalStorage
 ) : Repository {
 
-    override suspend fun listInventory(text: String): Flow<Resource<ListInventoryResponse>> {
-        return flow {
-            emit(Resource.Success(db.listInventory(text)))
-            emit(api.listInventory())
-        }
+    override suspend fun listInventory(text: String): Flow<Resource<ListInventoryResponse>> = flow {
+        emit(Resource.Success(db.listInventory(text)))
+        //   emit(api.listInventory())
     }
 
     override suspend fun delete(id: Long): Flow<Resource<InventoryResponse>> {

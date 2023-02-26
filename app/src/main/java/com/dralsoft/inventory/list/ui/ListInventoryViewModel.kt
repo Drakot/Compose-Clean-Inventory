@@ -71,10 +71,11 @@ class ListInventoryViewModel @Inject constructor(
     private fun load(text: String = "") {
         listJob?.cancel()
         listJob = viewModelScope.launch {
-            useCases.listInventoryUseCase.invoke(text).collect {
+          useCases.listInventoryUseCase.invoke(text).collect {
                 submitState(viewState.value.copy(isLoading = false))
                 when (it) {
                     is Resource.Success -> {
+
                         it.data?.let { data ->
                             submitState(viewState.value.copy(data = data.data))
                         }

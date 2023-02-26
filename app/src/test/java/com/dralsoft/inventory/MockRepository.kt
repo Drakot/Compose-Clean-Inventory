@@ -12,14 +12,14 @@ import kotlinx.coroutines.flow.flow
 class MockRepository : Repository {
 
     override suspend fun listInventory(text: String): Flow<Resource<ListInventoryResponse>> = flow {
-        InventoryLocalStorage().listInventory("")
+        emit(Resource.Success(InventoryLocalStorage().listInventory("")))
     }
 
-    override suspend fun delete(id: Long): Flow<Resource<InventoryResponse>> = flow  {
+    override suspend fun delete(id: Long): Flow<Resource<InventoryResponse>> = flow {
         InventoryLocalStorage().delete(id)
     }
 
-    override suspend fun getInventory(id: Long): Flow<Resource<InventoryResponse>> =flow {
+    override suspend fun getInventory(id: Long): Flow<Resource<InventoryResponse>> = flow {
         InventoryLocalStorage().getInventory(id)
     }
 
