@@ -24,7 +24,6 @@ class ListInventoryViewModelTest : BaseTest() {
 
     lateinit var listUseCases: ListUseCases
     private lateinit var viewModel: ListInventoryViewModel
-    val successResponse = mockInventoryResponse()
     val errorResponse = ErrorResponse()
 
     @Before
@@ -34,8 +33,11 @@ class ListInventoryViewModelTest : BaseTest() {
     }
 
 
-    private fun standardListUseCaseResponse(){
-        coEvery { listUseCases.listInventoryUseCase() } returns flow { emit(Resource.Success(successResponse)) }
+    private fun standardListUseCaseResponse(isError: Boolean = false) {
+        if (isError)
+            coEvery { listUseCases.listInventoryUseCase() } returns flow { emit(Resource.Error(errorResponse)) }
+        else
+            coEvery { listUseCases.listInventoryUseCase() } returns flow { emit(Resource.Success(mockInventoryResponse())) }
     }
 
     @Test
@@ -47,14 +49,13 @@ class ListInventoryViewModelTest : BaseTest() {
 
         viewState.testFlow(this) {
             assertThat(viewState.value.isLoading).isEqualTo(false)
-            assertThat(viewState.value.data).isEqualTo(successResponse.data)
+            assertThat(viewState.value.data).isEqualTo(mockInventoryResponse().data)
         }
     }
 
     @Test
     fun `on list error should trigger single event`(): Unit = runTest {
-        coEvery { listUseCases.listInventoryUseCase() } returns flow { emit(Resource.Error(errorResponse)) }
-
+        standardListUseCaseResponse(true)
         val viewState = viewModel.viewState
         assertThat(viewState.value.data).isEqualTo(listOf<InventoryItem>())
         assertThat(true).isEqualTo(viewState.value.isLoading)
@@ -64,7 +65,6 @@ class ListInventoryViewModelTest : BaseTest() {
             assertThat(viewModel.submitSingleEvent(mockk())).isEqualTo(Unit)
         }
     }
-
 
     @Test
     fun `on call Intent OnCloseSearchClick should set searchState to Closed`(): Unit = runTest {
