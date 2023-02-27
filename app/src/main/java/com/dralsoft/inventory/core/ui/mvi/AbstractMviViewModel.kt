@@ -1,11 +1,9 @@
 package com.dralsoft.inventory.core.ui.mvi
 
 import android.os.Build
-import android.os.Looper
 import androidx.annotation.CallSuper
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dralsoft.inventory.BuildConfig
 import com.dralsoft.inventory.core.domain.ValidationResult
 import com.dralsoft.inventory.detail.ui.LoadingState
 import kotlinx.coroutines.channels.Channel
@@ -15,13 +13,6 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-private fun debugCheckMainThread() {
-    if (BuildConfig.DEBUG) {
-        check(Looper.getMainLooper() === Looper.myLooper()) {
-            "Expected to be called on the main thread but was " + Thread.currentThread().name
-        }
-    }
-}
 
 abstract class AbstractMviViewModel<I : MviIntent, S : MviViewState, E : MviSingleEvent> :
     MviViewModel<I, S, E>, ViewModel() {
@@ -66,8 +57,7 @@ abstract class AbstractMviViewModel<I : MviIntent, S : MviViewState, E : MviSing
         Timber.tag(logTag).d("onCleared")
     }
 
-    protected fun submitSingleEvent(event: E) {
-        debugCheckMainThread()
+      fun submitSingleEvent(event: E) {
 
         eventChannel.trySend(event)
             .onSuccess { Timber.tag(logTag).d("sendEvent: event=$event") }
