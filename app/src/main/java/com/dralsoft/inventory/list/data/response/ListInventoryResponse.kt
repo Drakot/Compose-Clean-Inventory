@@ -1,7 +1,7 @@
 package com.dralsoft.inventory.list.data.response
 
 data class ListInventoryResponse(
-    val `data`: List<InventoryItem>,
+    val data: List<InventoryItem>?,
     val meta: Meta
 )
 

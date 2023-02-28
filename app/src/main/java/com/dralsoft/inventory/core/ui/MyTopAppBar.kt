@@ -31,24 +31,27 @@ fun MyTopAppBar(
     onSearch: (String) -> Unit
 ) {
 
+
     when (searchWidgetState) {
         SearchWidgetState.CLOSED -> {
             DefaultAppBar(viewConfig)
         }
         SearchWidgetState.OPENED -> {
+
             SearchAppBar(
                 text = searchTextState,
                 onTextChange = onTextChange,
                 onCloseClicked = onCloseClicked,
                 onSearch = onSearch
             )
+
         }
     }
 }
 
 
 @Composable
-fun DefaultAppBar(viewConfig: ViewConfig = ViewConfig()) {
+fun DefaultAppBar(viewConfig: ViewConfig = ViewConfig(), onSearchClicked: (() -> Unit)? = null) {
     TopAppBar(
         title = {
             Text(text = LocalContext.current.getString(R.string.app_name))
@@ -69,7 +72,10 @@ fun DefaultAppBar(viewConfig: ViewConfig = ViewConfig()) {
         actions = {
             viewConfig.onSearchClicked?.let {
                 IconButton(
-                    onClick = { it.invoke() }
+                    onClick = {
+                        it.invoke()
+                        onSearchClicked?.invoke()
+                    }
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Search,

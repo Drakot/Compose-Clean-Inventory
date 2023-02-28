@@ -71,14 +71,11 @@ class ListInventoryViewModel @Inject constructor(
     private fun load(text: String = "") {
         listJob?.cancel()
         listJob = viewModelScope.launch {
-          useCases.listInventoryUseCase.invoke(text).collect {
+            useCases.listInventoryUseCase(text).collect {
                 submitState(viewState.value.copy(isLoading = false))
                 when (it) {
                     is Resource.Success -> {
-
-                        it.data?.let { data ->
-                            submitState(viewState.value.copy(data = data.data))
-                        } //TODO mostrar listado vacio
+                        submitState(viewState.value.copy(data = it.data?.data ?: emptyList()))
                     }
                     else -> {
                         submitSingleEvent(ListUiSingleEvent.Error(it.error?.message ?: "Error"))

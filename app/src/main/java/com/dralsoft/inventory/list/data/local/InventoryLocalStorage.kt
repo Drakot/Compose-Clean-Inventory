@@ -10,7 +10,7 @@ class InventoryLocalStorage {
 
         val response = if (text.isNotEmpty()) {
             ListInventoryResponse(
-                mockInventoryResponse().data.toMutableList().shuffled().subList(0, 5),
+                mockInventoryResponse().data?.toMutableList()?.shuffled()?.subList(0, 5),
                 Meta(Pagination(1, 1, 10, 20))
             )
         } else {
@@ -20,16 +20,24 @@ class InventoryLocalStorage {
         return response
     }
 
+    suspend fun listInventoryNull(text: String): ListInventoryResponse {
+        delay(500)
+
+        return ListInventoryResponse(
+            null,
+            Meta(Pagination(1, 1, 10, 20))
+        )
+    }
+
     suspend fun delete(id: Long): InventoryResponse {
         delay(500)
-        return (InventoryResponse(mockInventoryResponse().data.first { it.id == id }))
+        return (InventoryResponse(mockInventoryResponse().data?.first { it.id == id }))
     }
 
     suspend fun getInventory(id: Long): InventoryResponse {
         delay(500)
         return InventoryResponse(
-            mockInventoryResponse().data.find { it.id == id }!!
-
+            mockInventoryResponse().data?.find { it.id == id }!!
         )
     }
 
@@ -37,6 +45,12 @@ class InventoryLocalStorage {
         delay(500)
         return InventoryResponse(item)
     }
+}
+
+fun mockNullInventoryResponse(): ListInventoryResponse {
+    return ListInventoryResponse(
+        null, Meta(Pagination(1, 1, 10, 20))
+    )
 }
 
 fun mockInventoryResponse(): ListInventoryResponse {

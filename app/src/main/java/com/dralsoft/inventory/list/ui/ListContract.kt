@@ -20,7 +20,7 @@ data class ListInventoryState(
     val data: List<InventoryItem> = listOf(),
     val isLoading: Boolean = false,
     val searchState: SearchWidgetState = SearchWidgetState.CLOSED,
-    val searchText: String = ""
+    val searchText: String = "",
 ) : MviViewState
 
 sealed class ListUiSingleEvent : MviSingleEvent {
