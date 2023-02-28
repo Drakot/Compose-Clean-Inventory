@@ -26,6 +26,7 @@ class ListInventoryViewModelTest : BaseTest() {
     private lateinit var viewModel: ListInventoryViewModel
     val errorResponse = ErrorResponse()
 
+    //sut = system under test
     @Before
     fun setUp() {
         listUseCases = mockk()

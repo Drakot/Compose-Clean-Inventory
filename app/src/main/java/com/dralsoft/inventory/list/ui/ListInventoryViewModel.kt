@@ -39,7 +39,7 @@ class ListInventoryViewModel @Inject constructor(
                     )
                 )
             }
-            ListIntent.AddInventory -> {
+            is ListIntent.AddInventory -> {
                 submitSingleEvent(
                     ListUiSingleEvent.OpenDetailScreen(
                         NavRoutes.NewInventory.route
@@ -78,7 +78,7 @@ class ListInventoryViewModel @Inject constructor(
 
                         it.data?.let { data ->
                             submitState(viewState.value.copy(data = data.data))
-                        }
+                        } //TODO mostrar listado vacio
                     }
                     else -> {
                         submitSingleEvent(ListUiSingleEvent.Error(it.error?.message ?: "Error"))
