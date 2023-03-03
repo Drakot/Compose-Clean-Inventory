@@ -1,6 +1,7 @@
 package com.dralsoft.inventory.list.ui
 
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -27,6 +28,7 @@ import com.dralsoft.inventory.core.ScaffoldView
 import com.dralsoft.inventory.core.ViewConfig
 import com.dralsoft.inventory.core.ui.mvi.collectInLaunchedEffectWithLifecycle
 import com.dralsoft.inventory.list.data.response.InventoryItem
+import timber.log.Timber
 
 @Composable
 fun ListInventoryScreen(navController: NavController, viewModel: ListInventoryViewModel = hiltViewModel()) {
@@ -52,13 +54,17 @@ fun ListInventoryScreen(navController: NavController, viewModel: ListInventoryVi
             }) {
             Loading(state.isLoading)
 
-            OnSuccess(state) {
+            OnSuccess(state, {
                 viewModel.submitIntent(ListIntent.InventoryClick(it.id))
-            }
+            }, {
+                Timber.tag("ListInventoryScreen").i("Long click")
+            })
 
             if (state.data.isEmpty() && !state.isLoading) {
                 Text(
-                    modifier = Modifier.fillMaxSize().wrapContentSize(Alignment.Center),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .wrapContentSize(Alignment.Center),
                     text = LocalContext.current.getString(com.dralsoft.inventory.R.string.list_inventory_empty)
                 )
             }
@@ -78,23 +84,33 @@ fun ListInventoryScreen(navController: NavController, viewModel: ListInventoryVi
 }
 
 @Composable
-fun OnSuccess(state: ListInventoryState, onItemSelected: (InventoryItem) -> Unit) {
+fun OnSuccess(
+    state: ListInventoryState,
+    onItemSelected: (InventoryItem) -> Unit,
+    onItemLongSelected: (InventoryItem) -> Unit
+) {
     LazyVerticalGrid(columns = GridCells.Fixed(2), content = {
         items(items = state.data) {
-            InventoryItemView(it) { inventoryItem ->
-                onItemSelected(inventoryItem)
-            }
+            InventoryItemView(it, onItemSelected, onItemLongSelected)
         }
     }, contentPadding = PaddingValues(0.dp))
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun InventoryItemView(inventoryItem: InventoryItem, onItemSelected: (InventoryItem) -> Unit) {
-    Column(modifier = Modifier
-        .padding(8.dp)
-        .clickable {
-            onItemSelected(inventoryItem)
-        }) {
+fun InventoryItemView(
+    inventoryItem: InventoryItem,
+    onItemSelected: (InventoryItem) -> Unit,
+    onItemLongSelected: (InventoryItem) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .padding(8.dp)
+            .combinedClickable(
+                onClick = { onItemSelected(inventoryItem) },
+                onLongClick = { onItemLongSelected(inventoryItem) },
+            )
+    ) {
         AsyncImage(
             modifier = Modifier
                 .fillMaxWidth()

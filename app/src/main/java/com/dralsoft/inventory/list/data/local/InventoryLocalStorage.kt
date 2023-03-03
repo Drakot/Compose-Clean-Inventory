@@ -9,10 +9,13 @@ class InventoryLocalStorage {
         delay(500)
 
         val response = if (text.isNotEmpty()) {
-            ListInventoryResponse(
-                mockInventoryResponse().data?.toMutableList()?.shuffled()?.subList(0, 5),
-                Meta(Pagination(1, 1, 10, 20))
-            )
+
+            mockInventoryResponse().data?.filter { it.attributes.name.contains(text, true) }.let {
+                ListInventoryResponse(
+                    it?.toMutableList(),
+                    Meta(Pagination(1, 1, 10, 20))
+                )
+            }
         } else {
             mockInventoryResponse()
         }
