@@ -19,9 +19,10 @@ class InventoryViewModel @Inject constructor(
     private val useCases: DetailUseCases,
 ) : AbstractMviViewModel<InventoryIntent, InventoryState, InventorySingleEvent<InventoryResponse>>() {
 
-    override fun initState() = InventoryState()
+    override fun initState() = InventoryState(saveEnabled = false)
 
     override fun submitIntent(intent: InventoryIntent) {
+       // submitState(viewState.value.copy(saveEnabled = false))
         viewModelScope.launch {
             when (intent) {
                 is InventoryIntent.Load -> {
@@ -142,7 +143,7 @@ class InventoryViewModel @Inject constructor(
                     submitState(viewState.value.copy(saveEnabled = true, isLoading = false))
                 }
             }?: run{
-                submitState(viewState.value.copy(saveEnabled = true, isLoading = false))
+                submitState(viewState.value.copy(saveEnabled = false, isLoading = false))
             }
         }
     }

@@ -1,4 +1,4 @@
-package com.dralsoft.inventory.list.data.local
+package com.dralsoft.inventory.core.data.local
 
 import com.dralsoft.inventory.detail.data.response.InventoryResponse
 import com.dralsoft.inventory.list.data.response.*

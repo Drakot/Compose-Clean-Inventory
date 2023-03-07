@@ -52,7 +52,8 @@ data class ViewConfig(
     val onClickNavIcon: () -> Unit = {},
     val onSearchClicked: (() -> Unit)? = null,
     val onFABClick: () -> Unit = {},
-    val fabImage: ImageVector? = null
+    val fabImage: ImageVector? = null,
+    val fabIsVisible: Boolean = false,
 )
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -81,7 +82,7 @@ fun ScaffoldView(
 
         floatingActionButton = {
             viewConfig.fabImage?.let {
-                MyFab(viewConfig.fabImage, onFABClick = viewConfig.onFABClick)
+                MyFab(viewConfig.fabIsVisible, viewConfig.fabImage, onFABClick = viewConfig.onFABClick)
             }
         }
     ) {

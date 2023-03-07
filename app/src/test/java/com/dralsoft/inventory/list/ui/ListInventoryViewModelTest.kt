@@ -4,7 +4,7 @@ import com.dralsoft.inventory.BaseTest
 import com.dralsoft.inventory.core.Resource
 import com.dralsoft.inventory.core.data.ErrorResponse
 import com.dralsoft.inventory.core.ui.SearchWidgetState
-import com.dralsoft.inventory.list.data.local.mockInventoryResponse
+import com.dralsoft.inventory.core.data.local.mockInventoryResponse
 import com.dralsoft.inventory.list.data.response.InventoryItem
 import com.dralsoft.inventory.list.domain.ListUseCases
 import com.dralsoft.inventory.testFlow

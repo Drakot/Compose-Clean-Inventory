@@ -11,4 +11,5 @@ interface Repository {
     suspend fun delete(id: Long): Flow<Resource<InventoryResponse>>
     suspend fun getInventory(id: Long): Flow<Resource<InventoryResponse>>
     suspend fun saveInventory(item: InventoryItem): Flow<Resource<InventoryResponse>>
+    suspend fun createInventory(item: InventoryItem): Flow<Resource<InventoryResponse>>
 }

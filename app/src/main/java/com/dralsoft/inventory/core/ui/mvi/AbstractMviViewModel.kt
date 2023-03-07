@@ -32,7 +32,7 @@ abstract class AbstractMviViewModel<I : MviIntent, S : MviViewState, E : MviSing
     abstract fun initState(): S
 
     init {
-        //   submitState(initState())
+        submitState(initState())
     }
 
     protected val logTag by lazy(LazyThreadSafetyMode.PUBLICATION) {
@@ -57,7 +57,7 @@ abstract class AbstractMviViewModel<I : MviIntent, S : MviViewState, E : MviSing
         Timber.tag(logTag).d("onCleared")
     }
 
-      fun submitSingleEvent(event: E) {
+    fun submitSingleEvent(event: E) {
 
         eventChannel.trySend(event)
             .onSuccess { Timber.tag(logTag).d("sendEvent: event=$event") }

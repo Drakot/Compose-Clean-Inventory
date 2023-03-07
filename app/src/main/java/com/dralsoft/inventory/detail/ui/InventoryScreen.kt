@@ -71,13 +71,19 @@ fun InventoryScreen(
             }
         }
     }
-
+    val viewState = viewModel.viewState.collectAsState().value
     Box(modifier = Modifier.fillMaxSize()) {
-        ScaffoldView(ViewConfig(showBackButton = true, fabImage = Icons.Rounded.Save, onFABClick = {
-            viewModel.submitIntent(InventoryIntent.Save)
-        }).copy(onClickNavIcon = {
-            navController.popBackStack()
-        })) {
+        ScaffoldView(
+            ViewConfig(
+                fabIsVisible = viewState.saveEnabled,
+                showBackButton = true,
+                fabImage = Icons.Rounded.Save,
+                onFABClick = {
+                    viewModel.submitIntent(InventoryIntent.Save)
+                }).copy(onClickNavIcon = {
+                navController.popBackStack()
+            })
+        ) {
             Form(viewModel, scope)
         }
     }

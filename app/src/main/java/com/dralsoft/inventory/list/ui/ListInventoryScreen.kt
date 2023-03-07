@@ -36,7 +36,7 @@ fun ListInventoryScreen(navController: NavController, viewModel: ListInventoryVi
 
 
     Box(modifier = Modifier.fillMaxSize()) {
-        ScaffoldView(ViewConfig(fabImage = Icons.Filled.Add, onSearchClicked = {
+        ScaffoldView(ViewConfig(fabIsVisible = true, fabImage = Icons.Filled.Add, onSearchClicked = {
             viewModel.submitIntent(ListIntent.OnSearchClicked)
         }, onFABClick = {
             viewModel.submitIntent(ListIntent.AddInventory)
@@ -82,7 +82,7 @@ fun ListInventoryScreen(navController: NavController, viewModel: ListInventoryVi
         }
     }
 }
-
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun OnSuccess(
     state: ListInventoryState,
@@ -90,21 +90,21 @@ fun OnSuccess(
     onItemLongSelected: (InventoryItem) -> Unit
 ) {
     LazyVerticalGrid(columns = GridCells.Fixed(2), content = {
-        items(items = state.data) {
-            InventoryItemView(it, onItemSelected, onItemLongSelected)
+        items(items = state.data, key = { it.id }) {
+            InventoryItemView(Modifier.animateItemPlacement(),it, onItemSelected, onItemLongSelected)
         }
     }, contentPadding = PaddingValues(0.dp))
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun InventoryItemView(
+fun InventoryItemView(modifier: Modifier,
     inventoryItem: InventoryItem,
     onItemSelected: (InventoryItem) -> Unit,
     onItemLongSelected: (InventoryItem) -> Unit
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .padding(8.dp)
             .combinedClickable(
                 onClick = { onItemSelected(inventoryItem) },

@@ -9,7 +9,8 @@ import javax.inject.Inject
 
 class SaveInventoryUseCase @Inject constructor(private val repository: Repository) {
 
-    suspend operator fun invoke(item:InventoryItem): Flow<Resource<InventoryResponse>> {
+    suspend operator fun invoke(item: InventoryItem): Flow<Resource<InventoryResponse>> {
+        if (item.id == 0L) return repository.createInventory(item)
         return repository.saveInventory(item)
     }
 }
