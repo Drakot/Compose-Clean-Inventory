@@ -22,7 +22,6 @@ class InventoryViewModel @Inject constructor(
     override fun initState() = InventoryState(saveEnabled = false)
 
     override fun submitIntent(intent: InventoryIntent) {
-       // submitState(viewState.value.copy(saveEnabled = false))
         viewModelScope.launch {
             when (intent) {
                 is InventoryIntent.Load -> {
