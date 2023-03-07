@@ -120,7 +120,7 @@ class InventoryViewModel @Inject constructor(
 
             inventoryId?.let {
 
-                useCases.inventoryUseCase.invoke(inventoryId).collect {
+                useCases.inventoryUseCase(inventoryId).collect {
                     when (it) {
                         is Resource.Success -> {
                             it.data?.data?.attributes?.apply {
