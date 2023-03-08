@@ -23,14 +23,13 @@ import org.mockito.Mockito.*
 class ListInventoryViewModelTest : BaseTest() {
 
     lateinit var listUseCases: ListUseCases
-    private lateinit var viewModel: ListInventoryViewModel
+    private lateinit var sut: ListInventoryViewModel
     val errorResponse = ErrorResponse()
 
-    //sut = system under test
     @Before
     fun setUp() {
         listUseCases = mockk()
-        viewModel = ListInventoryViewModel(listUseCases)
+        sut = ListInventoryViewModel(listUseCases)
     }
 
     sealed class ListUseCaseResponses {
@@ -69,7 +68,7 @@ class ListInventoryViewModelTest : BaseTest() {
     @Test
     fun `on init should load the list inventory`(): Unit = runTest {
         standardListUseCaseResponse()
-        val viewState = viewModel.viewState
+        val viewState = sut.viewState
         assertThat(viewState.value.data).isEqualTo(listOf<InventoryItem>())
         assertThat(true).isEqualTo(viewState.value.isLoading)
 
@@ -82,21 +81,21 @@ class ListInventoryViewModelTest : BaseTest() {
     @Test
     fun `on list error should trigger single event`(): Unit = runTest {
         standardListUseCaseResponse(ListUseCaseResponses.Error)
-        val viewState = viewModel.viewState
+        val viewState = sut.viewState
         assertThat(viewState.value.data).isEqualTo(listOf<InventoryItem>())
         assertThat(true).isEqualTo(viewState.value.isLoading)
 
         viewState.testFlow(this) {
             assertThat(viewState.value.isLoading).isEqualTo(false)
-            assertThat(viewModel.submitSingleEvent(mockk())).isEqualTo(Unit)
+            assertThat(sut.submitSingleEvent(mockk())).isEqualTo(Unit)
         }
     }
 
     @Test
     fun `on call Intent OnCloseSearchClick should set searchState to Closed`(): Unit = runTest {
-        val viewState = viewModel.viewState
+        val viewState = sut.viewState
         standardListUseCaseResponse()
-        viewModel.submitIntent(ListIntent.OnCloseSearchClick)
+        sut.submitIntent(ListIntent.OnCloseSearchClick)
 
         viewState.testFlow(this) {
             assertThat(viewState.value.searchState).isEqualTo(SearchWidgetState.CLOSED)
@@ -105,9 +104,9 @@ class ListInventoryViewModelTest : BaseTest() {
 
     @Test
     fun `on call Intent OnSearch should hide progress`(): Unit = runTest {
-        val viewState = viewModel.viewState
+        val viewState = sut.viewState
         standardListUseCaseResponse()
-        viewModel.submitIntent(ListIntent.OnSearch(""))
+        sut.submitIntent(ListIntent.OnSearch(""))
 
         viewState.testFlow(this) {
             assertThat(viewState.value.isLoading).isEqualTo(false)
@@ -117,9 +116,9 @@ class ListInventoryViewModelTest : BaseTest() {
 
     @Test
     fun `on call Intent OnSearchClicked should set searchState to Opened`(): Unit = runTest {
-        val viewState = viewModel.viewState
+        val viewState = sut.viewState
         standardListUseCaseResponse()
-        viewModel.submitIntent(ListIntent.OnSearchClicked)
+        sut.submitIntent(ListIntent.OnSearchClicked)
 
         viewState.testFlow(this) {
             assertThat(viewState.value.searchState).isEqualTo(SearchWidgetState.OPENED)
@@ -128,9 +127,9 @@ class ListInventoryViewModelTest : BaseTest() {
 
     @Test
     fun `on call Intent OnTypeSearch should set searchText`(): Unit = runTest {
-        val viewState = viewModel.viewState
+        val viewState = sut.viewState
         standardListUseCaseResponse()
-        viewModel.submitIntent(ListIntent.OnTypeSearch("test"))
+        sut.submitIntent(ListIntent.OnTypeSearch("test"))
 
         viewState.testFlow(this) {
             assertThat(viewState.value.searchText).isEqualTo("test")
@@ -140,31 +139,31 @@ class ListInventoryViewModelTest : BaseTest() {
 
     @Test
     fun `on call Intent InventoryClick should trigger single event`(): Unit = runTest {
-        val viewState = viewModel.viewState
+        val viewState = sut.viewState
         standardListUseCaseResponse()
-        viewModel.submitIntent(ListIntent.InventoryClick(3))
+        sut.submitIntent(ListIntent.InventoryClick(3))
 
         viewState.testFlow(this) {
             assertThat(viewState.value.isLoading).isEqualTo(false)
-            assertThat(viewModel.submitSingleEvent(mockk())).isEqualTo(Unit)
+            assertThat(sut.submitSingleEvent(mockk())).isEqualTo(Unit)
         }
     }
 
     @Test
     fun `on call Intent AddInventory should trigger single event`(): Unit = runTest {
-        val viewState = viewModel.viewState
+        val viewState = sut.viewState
         standardListUseCaseResponse()
-        viewModel.submitIntent(ListIntent.AddInventory)
+        sut.submitIntent(ListIntent.AddInventory)
 
         viewState.testFlow(this) {
             assertThat(viewState.value.isLoading).isEqualTo(false)
-            assertThat(viewModel.submitSingleEvent(mockk())).isEqualTo(Unit)
+            assertThat(sut.submitSingleEvent(mockk())).isEqualTo(Unit)
         }
     }
 
     @Test
     fun `on init when usecase returns null state empty should be true`(): Unit = runTest {
-        val viewState = viewModel.viewState
+        val viewState = sut.viewState
         standardListUseCaseResponse(ListUseCaseResponses.Empty)
 
         viewState.testFlow(this) {

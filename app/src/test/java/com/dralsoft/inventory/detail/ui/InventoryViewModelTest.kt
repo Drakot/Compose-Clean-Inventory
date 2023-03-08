@@ -40,8 +40,6 @@ class InventoryViewModelTest : BaseTest() {
 
         sut.submitIntent(InventoryIntent.Load(1))
 
-        //  Truth.assertThat(true).isEqualTo(viewState.value.isLoading)
-
         viewState.testFlow(this) {
             Truth.assertThat(viewState.value.isLoading).isEqualTo(false)
             Truth.assertThat(viewState.value.id).isEqualTo(1)
