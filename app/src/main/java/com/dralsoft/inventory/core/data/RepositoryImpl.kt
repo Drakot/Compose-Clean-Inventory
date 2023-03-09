@@ -1,10 +1,10 @@
 package com.dralsoft.inventory.core.data
 
 import com.dralsoft.inventory.core.Resource
+import com.dralsoft.inventory.core.data.local.InventoryLocalStorage
 import com.dralsoft.inventory.core.data.network.InventoryService
 import com.dralsoft.inventory.core.domain.Repository
 import com.dralsoft.inventory.detail.data.response.InventoryResponse
-import com.dralsoft.inventory.list.data.local.InventoryLocalStorage
 import com.dralsoft.inventory.list.data.response.InventoryItem
 import com.dralsoft.inventory.list.data.response.ListInventoryResponse
 import kotlinx.coroutines.flow.Flow
@@ -36,6 +36,13 @@ class RepositoryImpl @Inject constructor(
         return flow {
             emit(Resource.Success(db.saveInventory(item)))
             //emit(api.saveInventory(item))
+        }
+    }
+
+    override suspend fun createInventory(item: InventoryItem): Flow<Resource<InventoryResponse>> {
+        return flow {
+            emit(Resource.Success(db.saveInventory(item)))
+            //emit(api.createInventory(item))
         }
     }
 }

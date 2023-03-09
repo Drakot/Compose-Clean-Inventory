@@ -1,6 +1,6 @@
 package com.dralsoft.inventory.core.di
 
-import com.dralsoft.inventory.list.data.local.InventoryLocalStorage
+import com.dralsoft.inventory.core.data.local.InventoryLocalStorage
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -2,9 +2,9 @@ package com.dralsoft.inventory
 
 import com.dralsoft.inventory.core.Resource
 import com.dralsoft.inventory.core.data.ErrorResponse
+import com.dralsoft.inventory.core.data.local.InventoryLocalStorage
 import com.dralsoft.inventory.core.domain.Repository
 import com.dralsoft.inventory.detail.data.response.InventoryResponse
-import com.dralsoft.inventory.list.data.local.InventoryLocalStorage
 import com.dralsoft.inventory.list.data.response.InventoryItem
 import com.dralsoft.inventory.list.data.response.ListInventoryResponse
 import kotlinx.coroutines.flow.Flow
@@ -32,5 +32,11 @@ class MockRepository(val isError: Boolean = false) : Repository {
 
     override suspend fun saveInventory(item: InventoryItem): Flow<Resource<InventoryResponse>> = flow {
         InventoryResponse(item)
+    }
+
+    override suspend fun createInventory(item: InventoryItem): Flow<Resource<InventoryResponse>> {
+        return flow {
+            InventoryResponse(item)
+        }
     }
 }

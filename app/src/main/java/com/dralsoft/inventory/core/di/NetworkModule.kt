@@ -4,7 +4,7 @@ import com.dralsoft.inventory.core.data.RepositoryImpl
 import com.dralsoft.inventory.core.data.network.InventoryClient
 import com.dralsoft.inventory.core.domain.Repository
 import com.dralsoft.inventory.core.data.network.InventoryService
-import com.dralsoft.inventory.list.data.local.InventoryLocalStorage
+import com.dralsoft.inventory.core.data.local.InventoryLocalStorage
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
