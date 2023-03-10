@@ -96,7 +96,7 @@ class InventoryViewModel @Inject constructor(
 
     private fun onSave() {
         viewModelScope.launch {
-            submitState(viewState.value.copy(isLoading = true, saveEnabled = false))
+
 
             useCases.saveInventoryUseCase.invoke(viewState.value.map()).collect {
                 when (it) {
